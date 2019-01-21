@@ -4,9 +4,13 @@ interface
     type TOnPlayerCollision = procedure (Player: TActivePlayer; Side: Byte);
     type
         TPayload = record
+        	xVel: single;
+        	velStep: single;
+        	velMax: single;
+        	isMoving: boolean;
             Collider: CollisionBox;
-            X,Y: single;
-            OnPlayerCollision: TOnPlayerCollision;
+            ExternalCollider: CollisionBox;
+            OnPlayerCollision, OnPlayerExternalCollision: TOnPlayerCollision;
         end;
 implementation
 end.
