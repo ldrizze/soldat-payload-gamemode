@@ -119,7 +119,7 @@ begin
     // Setup Vars
     UltLevel := 0;
 
-    // Create and setup the Payload Collider
+    // Create and setup the Payload and Payload Collider
     Payload.Collider := CollisionBox_Create(100, 50, -3336, -293);
     Payload.ExternalCollider := CollisionBox_Create(270, 144, -3406, -387);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
