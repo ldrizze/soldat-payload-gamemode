@@ -82,7 +82,7 @@ implementation
     function CollisionBox_CheckFULL(C: CollisionBox; X, Y: single; W,H: integer):boolean;
     begin
         Result := false;
-        if (X > C.X) and (X+W < C.X+W) and (Y > C.Y) and (Y+H < C.Y+C.H) then Result := true;
+        if (X > C.X) and (X+W < C.X+C.W) and (Y > C.Y) and (Y+H < C.Y+C.H) then Result := true;
     end;
 
 
@@ -101,6 +101,9 @@ implementation
 
         // RIGHT
         if CollisionBox_CheckRIGHT(C, X, W) and CollisionBox_CheckFULLUD(C, Y, H) then Result := CollisionBox_RIGHT;
+
+        // FULL
+        if CollisionBox_CheckFULL(C, X, Y, W, H) then Result := CollisionBox_FULL;
 
         // UP_LEFT
         //if CollisionBox_CheckLEFT(C, X, W) and CollisionBox_CheckUP(C, X, W) then Result := CollisionBox_UP_LEFT;
