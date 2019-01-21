@@ -1,0 +1,6 @@
+WorlText Point distances (text scale 1.0):
+	Above: 17
+	Sides: 29
+
+
+
