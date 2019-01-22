@@ -25,6 +25,7 @@ procedure RenderPlayerUI(Player: TActivePlayer);
         playerClass:TPlayerClass;
         playerUltimate:TUltimate;
         percentage:Byte;
+        numericRepresentation:string;
 begin
 
     // Ultimate bar
@@ -55,6 +56,11 @@ begin
         else ultColor := RGB(255,0,0);
         Player.BigText(i, '.', 120, ultColor, 0.24, 10, 298 + (5 * (22-i)));
     end;
+
+    // Type
+    if playerUltimate.isActive then numericRepresentation := 'Active!'
+    else numericRepresentation := inttostr(percentage)+'%';
+    Player.BigText(108, numericRepresentation, 61, RGB(255,255,255), 0.05, 10, 400);
 
 end;
 
