@@ -8,6 +8,7 @@ interface
         	velStep: single;
         	velMax: single;
         	isMoving: boolean;
+            isContested: boolean;
             Collider: CollisionBox;
             ExternalCollider: CollisionBox;
             OnPlayerCollision, OnPlayerExternalCollision: TOnPlayerCollision;
