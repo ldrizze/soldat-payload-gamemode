@@ -47,18 +47,20 @@ begin
 
     // Barrinhas
     for i:=10 to 22 do begin
+        ultColor := RGB(255,0,0);
+
         calc := i-9;
         calc := round((calc*100)/13);
-        if playerUltimate.isActive then ultColor := RGB(255, 255, 255)
-        else if percentage >= calc then begin 
-            ultColor := RGB(0,255,0);
-        end
-        else ultColor := RGB(255,0,0);
+        
+        if percentage >= calc then begin
+            if playerUltimate.isActive then ultColor := RGB(255, 255, 255)
+            else ultColor := RGB(0,255,0);
+        end;
         Player.BigText(i, '.', 120, ultColor, 0.24, 10, 298 + (5 * (22-i)));
     end;
 
     // Type
-    if playerUltimate.isActive then numericRepresentation := 'Active!'
+    if playerUltimate.isActive then numericRepresentation := inttostr(playerUltimate.duration - playerUltimate.durationCount)+'s'
     else numericRepresentation := inttostr(percentage)+'%';
     Player.BigText(108, numericRepresentation, 61, RGB(255,255,255), 0.05, 10, 400);
 
@@ -69,15 +71,20 @@ var
     collisionDetector,i: Byte;
     playerClass:TPlayerClass;
     playerUltimate:TUltimate;
+    calc: Smallint;
 begin
 
     // Init vars
     Payload.isMoving := false;
     Payload.isContested := false;
     
+    {
+        PLAYER UPDATE LOGIC
+    }
     // Players events
     for i := 1 to 32 do begin
         
+        // Only update events if player is alive
         if Players.Player[i].Alive then begin
             // Inside Collider check
             collisionDetector := CollisionBox_CollideWithXY(Payload.Collider, Players.Player[i].X, Players.Player[i].Y, 10, 10);
@@ -96,10 +103,15 @@ begin
                 // Get the player ultimate
                 GetUltimate(Players.Player[i].ID, playerUltimate);
 
+                // Update ultimate tick count
+                UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
+                if UltimateInstances[Players.Player[i].ID].tickCount > 60 then UltimateInstances[Players.Player[i].ID].tickCount := 60;
+
                 // Update ultimate percentage
                 if not UltimateInstances[Players.Player[i].ID].isActive then begin
-                    if (Ticks mod 60) = 0 then begin 
-                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 20;
+                    if UltimateInstances[Players.Player[i].ID].tickCount = 60 then begin 
+                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 50;
+                        UltimateInstances[Players.Player[i].ID].tickCount := 0;
                     end;
                     
                     if UltimateInstances[Players.Player[i].ID].percentage >= 100 then begin 
@@ -107,15 +119,48 @@ begin
                     end;
                 end;
 
+                // Update all active ultimates
+                if UltimateInstances[Players.Player[i].ID].isActive then begin
+                    UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
+
+                    // Update duration count
+                    if UltimateInstances[Players.Player[i].ID].tickCount > 60 then begin
+                        UltimateInstances[Players.Player[i].ID].tickCount := 0;
+                        UltimateInstances[Players.Player[i].ID].durationCount := UltimateInstances[Players.Player[i].ID].durationCount + 1;
+                        calc := UltimateInstances[Players.Player[i].ID].duration - UltimateInstances[Players.Player[i].ID].durationCount;
+                        calc := calc * 100;
+                        calc := calc div UltimateInstances[Players.Player[i].ID].duration;
+                        Players.Player[i].Tell(inttostr(calc));
+                        UltimateInstances[Players.Player[i].ID].percentage := calc;
+                    end;
+
+                    // Check if ultimate is ended
+                    if UltimateInstances[Players.Player[i].ID].durationCount >= UltimateInstances[Players.Player[i].ID].duration then begin
+                        UltimateInstances[Players.Player[i].ID].cancelUltimate(Players.Player[i]);
+                        ResetUltimate(Players.Player[i].ID);
+                    end;
+                end;
+
                 // Players that activate the ultimate
-                if not (playerUltimate.isActive) and (Players.Player[i].KeyFlagThrow) and (UltimateInstances[Players.Player[i].ID].percentage=100) then UltimateInstances[Players.Player[i].ID].doTheUltimate(Players.Player[i]);
+                if not (playerUltimate.isActive) and (Players.Player[i].KeyFlagThrow) and (UltimateInstances[Players.Player[i].ID].percentage=100) then begin 
+                    UltimateInstances[Players.Player[i].ID].tickCount := 0;
+                    UltimateInstances[Players.Player[i].ID].isActive := true;
+                    UltimateInstances[Players.Player[i].ID].doTheUltimate(Players.Player[i]);
+                end;
             end;
 
-            // Update and render player UI
+            // Render the player UI
             RenderPlayerUI(Players.Player[i]);
         end;
     end;
+    {
+        PLAYER UPDATE LOGIC
+    }
 
+
+    { 
+        PAYLOAD UPDATE LOGIC
+    }
     // Update payload position
     if Payload.isMoving and not Payload.isContested then begin
         Payload.xVel := Payload.xVel + Payload.velStep;
@@ -127,6 +172,9 @@ begin
 
     // Render payload
     RenderPayload();
+    { 
+        PAYLOAD UPDATE LOGIC
+    }
 end;
 
 procedure OnPlayerCollidesOnPayload(Player: TActivePlayer; Side: Byte);
@@ -157,6 +205,11 @@ begin
     end;
 end;
 
+procedure OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
+begin
+    DestroyPlayerClass(Player.ID);
+end;
+
 begin
     // Setup Vars
     UltLevel := 0;
@@ -171,10 +224,13 @@ begin
     Payload.xVel := 0.0;
 
     // Set Clock tick to update game logic
-    Game.TickThreshold := 1;
+    Game.TickThreshold := 1; // 100 ms tick test
     Game.OnClockTick := @Update;
 
+    // Game on player leave
+    Game.OnLeave := @OnPlayerLeave;
+
     // Custom
-    for i:=1 to 32 do Players.Player[i].OnSpeak := @OnPlayerCommand;
+    for i:=1 to 10 do Players.Player[i].OnSpeak := @OnPlayerCommand;
 
 end.

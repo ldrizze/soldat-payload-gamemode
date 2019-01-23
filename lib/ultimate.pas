@@ -10,11 +10,12 @@ interface
             duration: Byte;
             durationCount: Byte;
             data: Byte;
+            damageHold: Byte;
             doTheUltimate: TUltimateEffectTrigger;
             cancelUltimate: TUltimateEffectTrigger;
     end;
     procedure CreateUltimate (PlayerID: Byte; duration:Byte; effectTrigger: TUltimateEffectTrigger; cancelUltimateTrigger: TUltimateEffectTrigger);
-    procedure ResetUltimate (ult:TUltimate);
+    procedure ResetUltimate (PlayerID: Byte);
     procedure GetUltimate(PlayerID: Byte; var r: TUltimate);
 
     var UltimateInstances: array[1..32] of TUltimate;
@@ -37,13 +38,13 @@ implementation
         r := UltimateInstances[PlayerID];
     end;
 
-    procedure ResetUltimate (ult:TUltimate);
+    procedure ResetUltimate (PlayerID: Byte);
     begin
-        ult.tickCount := 0;
-        ult.percentage := 0;
-        ult.isActive := false;
-        ult.duration := 0;
-        ult.durationCount := 0;
+         UltimateInstances[PlayerID].tickCount := 0;
+         UltimateInstances[PlayerID].percentage := 0;
+         UltimateInstances[PlayerID].isActive := false;
+         UltimateInstances[PlayerID].durationCount := 0;
+         UltimateInstances[PlayerID].damageHold := 0;
     end;
 
     var i:Byte;
