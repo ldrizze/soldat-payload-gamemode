@@ -66,7 +66,7 @@ begin
 
 end;
 
-procedure Update(Ticks: Integer);
+procedure SC3GameLogicUpdate(Ticks: Integer);
 var 
     collisionDetector,i: Byte;
     playerClass:TPlayerClass;
@@ -172,6 +172,7 @@ begin
 
     // Render payload
     RenderPayload();
+    RenderPayloadWaypoints();
     { 
         PAYLOAD UPDATE LOGIC
     }
@@ -180,13 +181,13 @@ end;
 procedure OnPlayerCollidesOnPayload(Player: TActivePlayer; Side: Byte);
 begin
     
-    if Side = CollisionBox_LEFT then Player.SetVelocity(-0.15 - Payload.xVel, Player.VelY);
-    if Side = CollisionBox_RIGHT then Player.SetVelocity(0.15 + Payload.xVel, Player.VelY);
+    if Side = CollisionBox_LEFT then Player.SetVelocity(-0.5 - Payload.xVel, Player.VelY);
+    if Side = CollisionBox_RIGHT then Player.SetVelocity((Payload.xVel) + Payload.xVel, Player.VelY);
     if Side = CollisionBox_UP then begin
         if Player.KeyUp and not Player.IsProne then Player.SetVelocity(Player.VelX, -3)
         else Player.SetVelocity(Player.VelX, -0.1);
     end;
-    if Side = CollisionBox_DOWN then Player.SetVelocity(Player.VelX, 0.15 + Payload.xVel);
+    if Side = CollisionBox_DOWN then Player.SetVelocity(Player.VelX, (Payload.xVel) + Payload.xVel);
 
 end;
 
@@ -196,7 +197,7 @@ begin
     if Player.Team = 1 then Payload.isContested := true;
 end;
 
-procedure OnPlayerCommand (Player: TActivePlayer; Text: string);
+procedure SC3OnPlayerCommand (Player: TActivePlayer; Text: string);
 begin
     if Text='!coords' then Player.Tell(floattostr(Player.X) + ',' + floattostr(Player.Y));
     if Text='!class pyro' then begin
@@ -205,12 +206,12 @@ begin
     end;
 end;
 
-procedure OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
+procedure SC3OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
 begin
     DestroyPlayerClass(Player.ID);
 end;
 
-procedure OnPlayerLeaveTeam (Player: TActivePlayer; Team: TTeam; Kicked: Boolean);
+procedure SC3OnPlayerLeaveTeam (Player: TActivePlayer; Team: TTeam; Kicked: Boolean);
 begin
     DestroyPlayerClass(Player.ID);
 end;
@@ -224,20 +225,19 @@ begin
     Payload.ExternalCollider := CollisionBox_Create(270, 144, -3406, -387);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
-    Payload.velStep := 0.002;
-    Payload.velMax := 0.3;
+    Payload.velStep := 0.1;
+    Payload.velMax := 7;
     Payload.xVel := 0.0;
 
     // Set Clock tick to update game logic
     Game.TickThreshold := 1; // 100 ms tick test
-    Game.OnClockTick := @Update;
+    Game.OnClockTick := @SC3GameLogicUpdate;
 
     // Game on player leave
-    Game.OnLeave := @OnPlayerLeave;
-    Game.Teams[1].OnLeave := @OnPlayerLeaveTeam;
-    Game.Teams[2].OnLeave := @OnPlayerLeaveTeam;
+    Game.Teams[1].OnLeave := @SC3OnPlayerLeaveTeam;
+    Game.Teams[2].OnLeave := @SC3OnPlayerLeaveTeam;
+    Game.OnLeave := @SC3OnPlayerLeave;
 
     // Custom
-    for i:=1 to 10 do Players.Player[i].OnSpeak := @OnPlayerCommand;
-
+    for i:=1 to 10 do Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
 end.
