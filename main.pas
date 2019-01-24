@@ -210,6 +210,11 @@ begin
     DestroyPlayerClass(Player.ID);
 end;
 
+procedure OnPlayerLeaveTeam (Player: TActivePlayer; Team: TTeam; Kicked: Boolean);
+begin
+    DestroyPlayerClass(Player.ID);
+end;
+
 begin
     // Setup Vars
     UltLevel := 0;
@@ -229,6 +234,8 @@ begin
 
     // Game on player leave
     Game.OnLeave := @OnPlayerLeave;
+    Game.Teams[1].OnLeave := @OnPlayerLeaveTeam;
+    Game.Teams[2].OnLeave := @OnPlayerLeaveTeam;
 
     // Custom
     for i:=1 to 10 do Players.Player[i].OnSpeak := @OnPlayerCommand;
