@@ -204,6 +204,7 @@ begin
         Player.Tell('Changing your class to PYRO');
         CreatePlayerClass(CLASS_TYPE_PYRO, Player);
     end;
+    if Text='!play' then SC3PlaySoundForAll('../scenery-gfx/crate7.png', Player);
 end;
 
 procedure SC3OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
@@ -225,8 +226,8 @@ begin
     Payload.ExternalCollider := CollisionBox_Create(270, 144, -3406, -387);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
-    Payload.velStep := 0.1;
-    Payload.velMax := 7;
+    Payload.velStep := 0.02;
+    Payload.velMax := 0.3;
     Payload.xVel := 0.0;
 
     // Set Clock tick to update game logic

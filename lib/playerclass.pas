@@ -15,6 +15,7 @@ interface
     procedure CreatePlayerClass (classType: Byte; Player: TActivePlayer);
     procedure GetPlayerClass (PlayerID: Byte; var r: TPlayerClass);
     procedure DestroyPlayerClass (PlayerID: Byte);
+    procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer);    
 
     { ULTIMATE EFFECTS TRIGGER }
     { PYRO }
@@ -24,6 +25,12 @@ interface
     var PlayerClassInstances: array[1..32] of TPlayerClass;
 implementation
 
+    procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer);
+    var _pcount:Byte;
+    begin
+        for _pcount := 1 to 32 do Players.Player[_pcount].PlaySound(sound, emmiter.X, emmiter.Y);
+    end;
+
     { ULTIMATE EFFECTS TRIGGER }
     { PYRO }
     procedure PyroUltmateEffectTrigger(Player: TActivePlayer);
@@ -32,7 +39,8 @@ implementation
         NewPrimary, NewSecondary: TNewWeapon;
     begin
         GetPlayerClass(Player.ID, playerClass);
-        Player.Say('FIRE!!!');
+        SC3PlaySoundForAll('../scenery-gfx/crate7.png', Players.Player[playerClass.playerID]);
+        Player.Say('Im on flames!!!');
 
         // Create Flamer armor
         NewPrimary := TNewWeapon.Create();
