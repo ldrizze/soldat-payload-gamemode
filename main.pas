@@ -8,11 +8,12 @@ var
     waypointY:Single;
 
 procedure RenderPayload();
+    var baseX, baseY: Single;
 begin
-    Players.WorldText(1, '\', 600, RGB(255,0,0), 0.1, Payload.Collider.X, Payload.Collider.Y-20);
-    Players.WorldText(2, '\', 600, RGB(255,0,0), 0.1, Payload.Collider.X + Payload.Collider.W, Payload.Collider.Y-20);
-    Players.WorldText(3, '/', 600, RGB(255,0,0), 0.1, Payload.Collider.X, Payload.Collider.Y + Payload.Collider.H-20);
-    Players.WorldText(4, '/', 600, RGB(255,0,0), 0.1, Payload.Collider.X + Payload.Collider.W, Payload.Collider.Y + Payload.Collider.H-20);
+    Players.WorldText(1, '\', 600, RGB(255,0,0), 0.5, baseX, baseY);
+    Players.WorldText(2, '_', 600, RGB(255,0,0), 0.5, baseX + 35, baseY-10);
+    Players.WorldText(4, '_', 600, RGB(255,0,0), 0.5, baseX + 95, baseY-10);
+    Players.WorldText(3, '/', 600, RGB(255,0,0), 0.5, baseX + 150, baseY);
 
     Players.WorldText(5, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
     Players.WorldText(6, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
