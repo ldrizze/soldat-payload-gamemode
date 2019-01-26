@@ -15,7 +15,6 @@ begin
     Players.WorldText(6, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
     Players.WorldText(7, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
     Players.WorldText(8, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
-
 end;
 
 procedure RenderPlayerUI(Player: TActivePlayer);
@@ -202,9 +201,14 @@ begin
     if Text='!coords' then Player.Tell(floattostr(Player.X) + ',' + floattostr(Player.Y));
     if Text='!class pyro' then begin
         Player.Tell('Changing your class to PYRO');
+        DestroyPlayerClass(Player.ID);
         CreatePlayerClass(CLASS_TYPE_PYRO, Player);
     end;
-    if Text='!play' then SC3PlaySoundForAll('../scenery-gfx/crate7.png', Player);
+    if Text='!class heavy' then begin
+        Player.Tell('Changing your class to HEAVY ARMOR');
+        DestroyPlayerClass(Player.ID);
+        CreatePlayerClass(CLASS_TYPE_HEAVY_ARMOR, Player);
+    end;
 end;
 
 procedure SC3OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
@@ -217,6 +221,12 @@ begin
     DestroyPlayerClass(Player.ID);
 end;
 
+procedure SC3OnPlayerJoin(Player: TActivePlayer; Team: TTeam);
+var _wcount:Byte;
+begin
+    for _wcount:=1 to 10 do Players[Player.ID].WeaponActive[_wcount] := false;
+end;
+
 begin
     // Setup Vars
     UltLevel := 0;
@@ -226,7 +236,7 @@ begin
     Payload.ExternalCollider := CollisionBox_Create(270, 144, -3406, -387);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
-    Payload.velStep := 0.02;
+    Payload.velStep := 0.005;
     Payload.velMax := 0.3;
     Payload.xVel := 0.0;
 
@@ -235,10 +245,13 @@ begin
     Game.OnClockTick := @SC3GameLogicUpdate;
 
     // Game on player leave
+    Game.OnJoin := @SC3OnPlayerJoin;
     Game.Teams[1].OnLeave := @SC3OnPlayerLeaveTeam;
     Game.Teams[2].OnLeave := @SC3OnPlayerLeaveTeam;
     Game.OnLeave := @SC3OnPlayerLeave;
 
     // Custom
-    for i:=1 to 10 do Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
+    for i:=1 to 10 do begin 
+        Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
+    end;
 end.
