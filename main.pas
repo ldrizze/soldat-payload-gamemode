@@ -3,6 +3,9 @@ uses Collider, Payload, PlayerClass;
 var 
     Payload:TPayload;
     UltLevel:Byte;
+    waypointOffset:Byte;
+    waypointX:Single;
+    waypointY:Single;
 
 procedure RenderPayload();
 begin
@@ -161,12 +164,58 @@ begin
         PAYLOAD UPDATE LOGIC
     }
     // Update payload position
-    if Payload.isMoving and not Payload.isContested then begin
+    if Payload.isMoving and not Payload.isContested and not Payload.isEnd then begin
+
+        // Payload velocity
         Payload.xVel := Payload.xVel + Payload.velStep;
         if Payload.xVel > Payload.velMax then Payload.xVel := Payload.velMax;
 
-        Payload.Collider.X := Payload.Collider.X + Payload.xVel;
-        Payload.ExternalCollider.X := Payload.ExternalCollider.X + Payload.xVel;
+        // Calculate left X distance to the next waypoint
+        waypointX := PayloadWaypoints[waypointOffset].X - Payload.Collider.X;
+        waypointY := PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y;
+        
+        // WriteLn('[MAIN] waypointX: '+floattostr(waypointX));
+
+        // Update X position of Payload
+        if waypointX > 0 then begin
+            Payload.Collider.X := Payload.Collider.X + Payload.xVel;
+            Payload.ExternalCollider.X := Payload.ExternalCollider.X + Payload.xVel;
+        end else if waypointX < 0 then begin
+            Payload.Collider.X := Payload.Collider.X - Payload.xVel;
+            Payload.ExternalCollider.X := Payload.ExternalCollider.X - Payload.xVel;
+        end;
+
+        // If waypointY is not 0, then track X% of the end
+        if waypointY <> 0 then begin
+            // WriteLn('[MAIN] waypointY: '+floattostr(waypointY));
+
+            waypointY := (Payload.xVel*100)/(abs(waypointX));
+
+            // WriteLn('[MAIN] MID waypointY: '+floattostr(waypointY));
+
+            waypointY := waypointY/100;
+            waypointY := (PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y) * waypointY;
+
+            // WriteLn('[MAIN] New waypointY: '+floattostr(waypointY));
+
+            if waypointX > 0 then begin
+                Payload.Collider.Y := Payload.Collider.Y + waypointY;
+                Payload.ExternalCollider.Y := Payload.ExternalCollider.Y + waypointY;
+            end else if waypointX < 0 then begin
+                Payload.Collider.Y := Payload.Collider.Y - waypointY;
+                Payload.ExternalCollider.Y := Payload.ExternalCollider.Y - waypointY;
+            end;
+        end;
+
+        // Detect collision payload x waypoint
+        if CollisionBox_CollideWithXY(Payload.Collider, PayloadWaypoints[waypointOffset].X, PayloadWaypoints[waypointOffset].Y, 10, 10) = CollisionBox_FULL then begin
+            WriteLn('[MAIN] Waypoint REACHED!');
+            if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then Payload.isEnd := true
+            else begin
+                waypointOffset := waypointOffset+1;
+            end;
+        end;
+
     end else Payload.xVel := 0;
 
     // Render payload
@@ -230,15 +279,18 @@ end;
 begin
     // Setup Vars
     UltLevel := 0;
+    waypointOffset := 2;
 
     // Create and setup the Payload and Payload Collider
-    Payload.Collider := CollisionBox_Create(100, 50, -3336, -293);
-    Payload.ExternalCollider := CollisionBox_Create(270, 144, -3406, -387);
+    Payload.Collider := CollisionBox_Create(100, 50, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
+    Payload.ExternalCollider := CollisionBox_Create(270, 144, PayloadWaypoints[1].X-70, PayloadWaypoints[1].Y-94);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
     Payload.velStep := 0.005;
     Payload.velMax := 0.3;
     Payload.xVel := 0.0;
+    Payload.isEnd := false;
+    Payload.isReached := false;
 
     // Set Clock tick to update game logic
     Game.TickThreshold := 1; // 100 ms tick test

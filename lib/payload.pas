@@ -9,6 +9,9 @@ interface
         	velMax: single;
         	isMoving: boolean;
             isContested: boolean;
+            isReached: boolean;
+            isEnd: boolean;
+            reachTickCount: Smallint;
             Collider: CollisionBox;
             ExternalCollider: CollisionBox;
             OnPlayerCollision, OnPlayerExternalCollision: TOnPlayerCollision;
@@ -65,7 +68,7 @@ implementation
 
         // Map Waypoints
         AddWaypoint(WAYTYPE_START, -3336, -293);
-        AddWaypoint(WAYTYPE_WAYPOINT, -2836, -293);
+        AddWaypoint(WAYTYPE_WAYPOINT, -2836, -350);
         AddWaypoint(WAYTYPE_CHECKPOINT, -2336, -293);
         AddWaypoint(WAYTYPE_WAYPOINT, -1836, -293);
         AddWaypoint(WAYTYPE_END, -1336, -293);
