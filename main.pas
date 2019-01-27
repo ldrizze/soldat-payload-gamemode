@@ -19,38 +19,65 @@ begin
     Players.WorldText(7, '`', 600, RGB(50,105,30), 1.0, baseX + 114, baseY-75); 
     Players.WorldText(8, '.', 600, RGB(50,105,30), 1.0, baseX + 100, baseY-172);   
     Players.WorldText(9, '.', 600, RGB(50,105,30), 1, baseX + 100, baseY-154);
-    Players.WorldText(10, '.', 600, RGB(50,105,30), 1, baseX + 129, baseY-154);    
-    Players.WorldText(11, '_', 600, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
-    Players.WorldText(12, '_', 600, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
-    Players.WorldText(13, '_', 600, RGB(50,105,30), 0.5, baseX + 90, baseY-80);  
-    Players.WorldText(14, chr(149), 600, RGB(80,80,80), 0.19, baseX + 55, baseY-10);
-    Players.WorldText(15, chr(149), 600, RGB(80,80,80), 0.19, baseX + 145, baseY-10);
-    Players.WorldText(16, '.', 600, RGB(80,80,80), 0.29, baseX + 53.5, baseY-29);
-    Players.WorldText(17, '.', 600, RGB(80,80,80), 0.29, baseX + 61, baseY-29);
-    Players.WorldText(18, '.', 600, RGB(80,80,80), 0.29, baseX + 143.5, baseY-29);
-    Players.WorldText(19, '.', 600, RGB(80,80,80), 0.29, baseX + 151, baseY-29);
-    Players.WorldText(20, '.', 600, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);      
-    Players.WorldText(21, '`', 600, RGB(105,215,190), 0.7, baseX + 124, baseY-59);  
-    Players.WorldText(22, '.', 600, RGB(105,215,190), 0.8, baseX + 109, baseY-141.5);
-    Players.WorldText(23, '|', 600, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3); 
-    Players.WorldText(24, '.', 600, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5); 
-    Players.WorldText(25, '.', 600, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5); 
-    Players.WorldText(26, '.', 600, RGB(210,210,0), 0.1, baseX + 47, baseY-10); 
-    Players.WorldText(27, chr(187), 600, RGB(240,0,0), 0.30, baseX + 56, baseY-39.5);
-    Players.WorldText(28, '>', 600, RGB(200,0,0), 0.12, baseX + 106, baseY-16.5);
-    Players.WorldText(29, '>', 600, RGB(200,0,0), 0.12, baseX + 104, baseY-16.5);
-    Players.WorldText(30, '>', 600, RGB(200,0,0), 0.12, baseX + 102, baseY-16.5);
-    Players.WorldText(31, '>', 600, RGB(200,0,0), 0.12, baseX + 100, baseY-16.5);
-    Players.WorldText(32, '>', 600, RGB(200,0,0), 0.12, baseX + 98, baseY-16.5);
-    Players.WorldText(33, '-', 600, RGB(140,140,140), 0.60, baseX + 56, baseY-72.5);
-    Players.WorldText(34, '-', 600, RGB(120,120,120), 0.60, baseX + 56, baseY-70.5);
-    Players.WorldText(35, '-', 600, RGB(100,100,100), 0.60, baseX + 56, baseY-68.5);
+    Players.WorldText(10, '.', 600, RGB(50,105,30), 1, baseX + 129, baseY-154);
+    Players.WorldText(11, '_', 600, RGB(50,50,50), 0.5, baseX + 35, baseY-78);
+    Players.WorldText(12, '_', 600, RGB(50,50,50), 0.5, baseX + 115, baseY-78);
+    Players.WorldText(13, '_', 600, RGB(50,50,50), 0.5, baseX + 90, baseY-78);    
+    Players.WorldText(14, '_', 600, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
+    Players.WorldText(15, '_', 600, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
+    Players.WorldText(16, '_', 600, RGB(50,105,30), 0.5, baseX + 90, baseY-80);
+   
+    Players.WorldText(17, chr(149), 600, RGB(80,80,80), 0.19, baseX + 55, baseY-10);
+    Players.WorldText(18, chr(149), 600, RGB(80,80,80), 0.19, baseX + 145, baseY-10);
+    Players.WorldText(19, '.', 600, RGB(80,80,80), 0.29, baseX + 53.5, baseY-29);
+    Players.WorldText(20, '.', 600, RGB(80,80,80), 0.29, baseX + 61, baseY-29);
+    Players.WorldText(21, '.', 600, RGB(80,80,80), 0.29, baseX + 143.5, baseY-29);
+    Players.WorldText(22, '.', 600, RGB(80,80,80), 0.29, baseX + 151, baseY-29);
+
+
+    Players.WorldText(23, '.', 600, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);      
+    Players.WorldText(24, '`', 600, RGB(105,215,190), 0.7, baseX + 124, baseY-59);  
+    Players.WorldText(25, '.', 600, RGB(105,215,190), 0.8, baseX + 109, baseY-141.5);
+    Players.WorldText(26, '|', 600, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3); 
+    Players.WorldText(27, '.', 600, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5); 
+    Players.WorldText(28, '.', 600, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5); 
+    Players.WorldText(29, '.', 600, RGB(210,210,0), 0.1, baseX + 47, baseY-10); 
+    
+    Players.WorldText(30, '.', 600, RGB(200,0,0), 0.6, baseX + 77, baseY-94.5);
+    Players.WorldText(31, chr(187), 600, RGB(240,0,0), 0.30, baseX + 56, baseY-39);
+    Players.WorldText(32, '>', 600, RGB(200,0,0), 0.12, baseX + 103.5, baseY-16.5);
+    Players.WorldText(33, '>', 600, RGB(200,0,0), 0.12, baseX + 101.5, baseY-16.5);
+    Players.WorldText(34, '>', 600, RGB(200,0,0), 0.12, baseX + 99.5, baseY-16.5);
+    Players.WorldText(35, '>', 600, RGB(200,0,0), 0.12, baseX + 97.5, baseY-16.5);
+    Players.WorldText(36, '>', 600, RGB(200,0,0), 0.12, baseX + 95.5, baseY-16.5);
+    
+    Players.WorldText(38, '-', 600, RGB(170,170,170), 0.60, baseX + 56, baseY-72.5);
+    Players.WorldText(39, '-', 600, RGB(130,130,130), 0.60, baseX + 56, baseY-71.5);
+    Players.WorldText(40, '-', 600, RGB(100,100,100), 0.60, baseX + 56, baseY-70.5);
+    Players.WorldText(41, '-', 600, RGB(80,80,80), 0.60, baseX + 56, baseY-69.5);
+    Players.WorldText(42, '-', 600, RGB(60,60,60), 0.60, baseX + 56, baseY-68.5);
+    Players.WorldText(43, '_', 600, RGB(40,40,25), 0.375, baseX + 56, baseY-67.0);
+    Players.WorldText(44, 'Y', 600, RGB(10,10,10), 0.05, baseX + 97, baseY-2);
+    Players.WorldText(45, 'Y', 600, RGB(10,10,10), 0.05, baseX + 66, baseY-2);
+
+    Players.WorldText(46, chr(149), 600, RGB(60,60,60), 0.18, baseX + 56, baseY-8);
+    Players.WorldText(47, chr(149), 600, RGB(60,60,60), 0.18, baseX + 146, baseY-8);
+    Players.WorldText(48, '.', 600, RGB(60,60,60), 0.28, baseX + 54.5, baseY-27);
+    Players.WorldText(49, '.', 600, RGB(60,60,60), 0.28, baseX + 62, baseY-27);
+    Players.WorldText(50, '.', 600, RGB(60,60,60), 0.28, baseX + 144.5, baseY-27);
+    Players.WorldText(51, '.', 600, RGB(60,60,60), 0.28, baseX + 152, baseY-27);
+
+    Players.WorldText(52, chr(187), 600, RGB(45,90,18), 0.15, baseX + 123, baseY-18);
+    Players.WorldText(54, '-', 600, RGB(255,100,0), 0.20, baseX + 148, baseY-2);
+    Players.WorldText(55, '-', 600, RGB(255,200,0), 0.15, baseX + 150, baseY+8);
+    Players.WorldText(56, '-', 600, RGB(255,100,0), 0.20, baseX + 58, baseY-2);
+    Players.WorldText(57, '-', 600, RGB(255,200,0), 0.15, baseX + 60, baseY+8);
 
     // External Collider for moving the car
-    Players.WorldText(36, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
-    Players.WorldText(37, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
-    Players.WorldText(38, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
-    Players.WorldText(39, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    //Players.WorldText(100, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
+    //Players.WorldText(101, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
+    //Players.WorldText(102, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    //Players.WorldText(103, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
 end;
 
 procedure RenderPlayerUI(Player: TActivePlayer);
@@ -64,15 +91,15 @@ procedure RenderPlayerUI(Player: TActivePlayer);
 begin
 
     // Ultimate bar
-    Player.BigText(100, '||', 61, RGB(0,0,0), 0.1, 10, 383);
-    Player.BigText(101, '||', 61, RGB(0,0,0), 0.1, 10, 372);
-    Player.BigText(102, '||', 61, RGB(0,0,0), 0.1, 10, 361);
-    Player.BigText(103, '||', 61, RGB(0,0,0), 0.1, 10, 350);
-    Player.BigText(104, '||', 61, RGB(0,0,0), 0.1, 10, 339);
-    Player.BigText(105, '||', 61, RGB(0,0,0), 0.1, 10, 328);
+    Player.BigText(120, '||', 600, RGB(0,0,0), 0.1, 10, 383);
+    Player.BigText(121, '||', 600, RGB(0,0,0), 0.1, 10, 372);
+    Player.BigText(122, '||', 600, RGB(0,0,0), 0.1, 10, 361);
+    Player.BigText(123, '||', 600, RGB(0,0,0), 0.1, 10, 350);
+    Player.BigText(124, '||', 600, RGB(0,0,0), 0.1, 10, 339);
+    Player.BigText(125, '||', 600, RGB(0,0,0), 0.1, 10, 328);
 
-    Player.BigText(106, '_', 61, RGB(0,0,0), 0.08, 12, 318);
-    Player.BigText(107, '_', 61, RGB(0,0,0), 0.08, 12, 384);
+    Player.BigText(126, '_', 600, RGB(0,0,0), 0.08, 12, 318);
+    Player.BigText(127, '_', 600, RGB(0,0,0), 0.08, 12, 384);
 
     // Desenha os %
     GetPlayerClass(Player.ID, playerClass);
@@ -91,13 +118,13 @@ begin
             if playerUltimate.isActive then ultColor := RGB(255, 255, 255)
             else ultColor := RGB(0,255,0);
         end;
-        Player.BigText(i, '.', 120, ultColor, 0.24, 10, 298 + (5 * (22-i)));
+        Player.BigText(60+i, '.', 600, ultColor, 0.24, 10, 298 + (5 * (22-i)));
     end;
 
     // Type
     if playerUltimate.isActive then numericRepresentation := inttostr(playerUltimate.duration - playerUltimate.durationCount)+'s'
     else numericRepresentation := inttostr(percentage)+'%';
-    Player.BigText(108, numericRepresentation, 61, RGB(255,255,255), 0.05, 10, 400);
+    Player.BigText(108, numericRepresentation, 600, RGB(255,255,255), 0.05, 10, 400);
 
 end;
 
@@ -185,7 +212,7 @@ begin
             end;
 
             // Render the player UI
-            RenderPlayerUI(Players.Player[i]);
+            if (Ticks mod 60)=0 then RenderPlayerUI(Players.Player[i]);
         end;
     end;
     {
@@ -253,7 +280,7 @@ begin
 
     // Render payload
     RenderPayload();
-    RenderPayloadWaypoints();
+    //if (Ticks mod 300)=0 then RenderPayloadWaypoints();
     { 
         PAYLOAD UPDATE LOGIC
     }
@@ -309,6 +336,12 @@ begin
     for _wcount:=1 to 10 do Players[Player.ID].WeaponActive[_wcount] := false;
 end;
 
+procedure SC3BeforeMapChange(Next: string);
+var _pcount:Byte;
+begin
+    for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
+end;
+
 begin
     // Setup Vars
     UltLevel := 0;
@@ -334,6 +367,9 @@ begin
     Game.Teams[1].OnLeave := @SC3OnPlayerLeaveTeam;
     Game.Teams[2].OnLeave := @SC3OnPlayerLeaveTeam;
     Game.OnLeave := @SC3OnPlayerLeave;
+
+    // Map events
+    Map.OnBeforeMapChange := @SC3BeforeMapChange;
 
     // Custom
     for i:=1 to 10 do begin 
