@@ -162,13 +162,13 @@ implementation
 
         // Ultimate durations
         ClassUltimateTime[CLASS_TYPE_PYRO] := 10;
-        ClassUltimateTime[CLASS_TYPE_HEAVY_ARMOR] := 10;
-        ClassUltimateTime[CLASS_TYPE_MEDIC] := 10;
-        ClassUltimateTime[CLASS_TYPE_SNIPER] := 10;
-        ClassUltimateTime[CLASS_TYPE_SPY] := 10;
+        ClassUltimateTime[CLASS_TYPE_HEAVY_ARMOR] := 1;
+        ClassUltimateTime[CLASS_TYPE_MEDIC] := 1;
+        ClassUltimateTime[CLASS_TYPE_SNIPER] := 15;
+        ClassUltimateTime[CLASS_TYPE_SPY] := 1;
         ClassUltimateTime[CLASS_TYPE_FLANK] := 10;
-        ClassUltimateTime[CLASS_TYPE_RADIO] := 10;
-        ClassUltimateTime[CLASS_TYPE_GUNSLINGER] := 10;
+        ClassUltimateTime[CLASS_TYPE_RADIO] := 5;
+        ClassUltimateTime[CLASS_TYPE_GUNSLINGER] := 15;
     end.
 
 end.
