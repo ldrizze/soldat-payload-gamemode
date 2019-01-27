@@ -67,11 +67,11 @@ implementation
         Waytype_colors[WAYTYPE_END] := RGB(255,0,0);
 
         // Map Waypoints
-        AddWaypoint(WAYTYPE_START, -3336, -293);
+        AddWaypoint(WAYTYPE_START, -3336, -315);
         AddWaypoint(WAYTYPE_WAYPOINT, -2836, -350);
-        AddWaypoint(WAYTYPE_CHECKPOINT, -2336, -293);
-        AddWaypoint(WAYTYPE_WAYPOINT, -1836, -293);
-        AddWaypoint(WAYTYPE_END, -1336, -293);
+        AddWaypoint(WAYTYPE_CHECKPOINT, -2336, -315);
+        AddWaypoint(WAYTYPE_WAYPOINT, -1836, -315);
+        AddWaypoint(WAYTYPE_END, -1336, -315);
     end.
 
 end.

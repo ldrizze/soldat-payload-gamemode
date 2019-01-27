@@ -10,15 +10,47 @@ var
 procedure RenderPayload();
     var baseX, baseY: Single;
 begin
-    Players.WorldText(1, '\', 600, RGB(255,0,0), 0.5, baseX, baseY);
-    Players.WorldText(2, '_', 600, RGB(255,0,0), 0.5, baseX + 35, baseY-10);
-    Players.WorldText(4, '_', 600, RGB(255,0,0), 0.5, baseX + 95, baseY-10);
-    Players.WorldText(3, '/', 600, RGB(255,0,0), 0.5, baseX + 150, baseY);
+    baseX := Payload.Collider.X - 40;
+    baseY := Payload.Collider.Y + 20;
 
-    Players.WorldText(5, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
-    Players.WorldText(6, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
-    Players.WorldText(7, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
-    Players.WorldText(8, '|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    // The Payload
+    Players.WorldText(5, 'b', 600, RGB(80,80,80), 0.2, baseX + 110, baseY-46);
+    Players.WorldText(6, 'l', 600, RGB(50,105,30), 0.3, baseX + 40, baseY-36);
+    Players.WorldText(7, '`', 600, RGB(50,105,30), 1.0, baseX + 114, baseY-75); 
+    Players.WorldText(8, '.', 600, RGB(50,105,30), 1.0, baseX + 100, baseY-172);   
+    Players.WorldText(9, '.', 600, RGB(50,105,30), 1, baseX + 100, baseY-154);
+    Players.WorldText(10, '.', 600, RGB(50,105,30), 1, baseX + 129, baseY-154);    
+    Players.WorldText(11, '_', 600, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
+    Players.WorldText(12, '_', 600, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
+    Players.WorldText(13, '_', 600, RGB(50,105,30), 0.5, baseX + 90, baseY-80);  
+    Players.WorldText(14, chr(149), 600, RGB(80,80,80), 0.19, baseX + 55, baseY-10);
+    Players.WorldText(15, chr(149), 600, RGB(80,80,80), 0.19, baseX + 145, baseY-10);
+    Players.WorldText(16, '.', 600, RGB(80,80,80), 0.29, baseX + 53.5, baseY-29);
+    Players.WorldText(17, '.', 600, RGB(80,80,80), 0.29, baseX + 61, baseY-29);
+    Players.WorldText(18, '.', 600, RGB(80,80,80), 0.29, baseX + 143.5, baseY-29);
+    Players.WorldText(19, '.', 600, RGB(80,80,80), 0.29, baseX + 151, baseY-29);
+    Players.WorldText(20, '.', 600, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);      
+    Players.WorldText(21, '`', 600, RGB(105,215,190), 0.7, baseX + 124, baseY-59);  
+    Players.WorldText(22, '.', 600, RGB(105,215,190), 0.8, baseX + 109, baseY-141.5);
+    Players.WorldText(23, '|', 600, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3); 
+    Players.WorldText(24, '.', 600, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5); 
+    Players.WorldText(25, '.', 600, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5); 
+    Players.WorldText(26, '.', 600, RGB(210,210,0), 0.1, baseX + 47, baseY-10); 
+    Players.WorldText(27, chr(187), 600, RGB(240,0,0), 0.30, baseX + 56, baseY-39.5);
+    Players.WorldText(28, '>', 600, RGB(200,0,0), 0.12, baseX + 106, baseY-16.5);
+    Players.WorldText(29, '>', 600, RGB(200,0,0), 0.12, baseX + 104, baseY-16.5);
+    Players.WorldText(30, '>', 600, RGB(200,0,0), 0.12, baseX + 102, baseY-16.5);
+    Players.WorldText(31, '>', 600, RGB(200,0,0), 0.12, baseX + 100, baseY-16.5);
+    Players.WorldText(32, '>', 600, RGB(200,0,0), 0.12, baseX + 98, baseY-16.5);
+    Players.WorldText(33, '-', 600, RGB(140,140,140), 0.60, baseX + 56, baseY-72.5);
+    Players.WorldText(34, '-', 600, RGB(120,120,120), 0.60, baseX + 56, baseY-70.5);
+    Players.WorldText(35, '-', 600, RGB(100,100,100), 0.60, baseX + 56, baseY-68.5);
+
+    // External Collider for moving the car
+    Players.WorldText(36, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
+    Players.WorldText(37, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
+    Players.WorldText(38, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(39, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
 end;
 
 procedure RenderPlayerUI(Player: TActivePlayer);
@@ -283,8 +315,8 @@ begin
     waypointOffset := 2;
 
     // Create and setup the Payload and Payload Collider
-    Payload.Collider := CollisionBox_Create(100, 50, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
-    Payload.ExternalCollider := CollisionBox_Create(270, 144, PayloadWaypoints[1].X-70, PayloadWaypoints[1].Y-94);
+    Payload.Collider := CollisionBox_Create(150, 70, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
+    Payload.ExternalCollider := CollisionBox_Create(300, 200, PayloadWaypoints[1].X-100, PayloadWaypoints[1].Y-100);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
     Payload.velStep := 0.005;
