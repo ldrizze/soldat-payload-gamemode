@@ -167,12 +167,13 @@ begin
 
                 // Update ultimate tick count
                 UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
-                if UltimateInstances[Players.Player[i].ID].tickCount > 60 then UltimateInstances[Players.Player[i].ID].tickCount := 60;
 
                 // Update ultimate percentage
                 if not UltimateInstances[Players.Player[i].ID].isActive then begin
-                    if UltimateInstances[Players.Player[i].ID].tickCount = 60 then begin 
-                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 50;
+                    if UltimateInstances[Players.Player[i].ID].tickCount > 120 then UltimateInstances[Players.Player[i].ID].tickCount := 120;
+
+                    if UltimateInstances[Players.Player[i].ID].tickCount = 120 then begin 
+                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 1;
                         UltimateInstances[Players.Player[i].ID].tickCount := 0;
                     end;
                     
@@ -183,7 +184,7 @@ begin
 
                 // Update all active ultimates
                 if UltimateInstances[Players.Player[i].ID].isActive then begin
-                    UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
+                    // UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
 
                     // Update duration count
                     if UltimateInstances[Players.Player[i].ID].tickCount > 60 then begin
@@ -318,6 +319,7 @@ begin
         DestroyPlayerClass(Player.ID);
         CreatePlayerClass(CLASS_TYPE_HEAVY_ARMOR, Player);
     end;
+    if Text='!health' then Player.Tell(floattostr(Player.Health));
 end;
 
 procedure SC3OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
@@ -340,6 +342,24 @@ procedure SC3BeforeMapChange(Next: string);
 var _pcount:Byte;
 begin
     for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
+end;
+
+function SC3OnPlayerDamage(Shooter, Victim: TActivePlayer; Damage: Single; BulletId: Byte): Single;
+var calc:Smallint;
+begin
+    if (Shooter.ID <> Victim.ID) and not UltimateInstances[Shooter.ID].isActive then begin
+        if Damage > 100 then calc := 10 else begin
+            calc := round(Damage);
+            calc := calc div 10;
+        end;
+        WriteLn('[MAIN] Player Damage: '+floattostr(Damage));
+        WriteLn('[MAIN] Damage calc: '+inttostr(calc));
+        calc := UltimateInstances[Shooter.ID].percentage + calc;
+        if calc > 100 then UltimateInstances[Shooter.ID].percentage := 100
+        else UltimateInstances[Shooter.ID].percentage := calc;
+    end;
+    Result := Damage;
+
 end;
 
 begin
@@ -374,5 +394,6 @@ begin
     // Custom
     for i:=1 to 10 do begin 
         Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
+        Players.Player[i].OnDamage := @SC3OnPlayerDamage;
     end;
 end.
