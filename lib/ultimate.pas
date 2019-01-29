@@ -19,7 +19,8 @@ interface
     procedure CreateUltimate (Player: TActivePlayer; duration:Byte; effectTrigger: TUltimateEffectTrigger; cancelUltimateTrigger: TUltimateEffectTrigger);
     procedure ResetUltimate (PlayerID: Byte);
     procedure GetUltimate(PlayerID: Byte; var r: TUltimate);
-    procedure ResetWeaponUltimate(Player: TActivePlayer);
+    procedure ResetWeaponsUltimate(Player: TActivePlayer);
+    procedure GiveNewWeaponsUltimate(Player: TActivePlayer; primary, secondary: Byte; pAmmo, sAmmo: Smallint);
 
     var UltimateInstances: array[1..32] of TUltimate;
 implementation
@@ -52,7 +53,7 @@ implementation
         UltimateInstances[PlayerID].damageHold := 0;
     end;
 
-    procedure ResetWeaponUltimate(Player: TActivePlayer);
+    procedure ResetWeaponsUltimate(Player: TActivePlayer);
     var
         ult: TUltimate;
         NewPrimary, NewSecondary: TNewWeapon;
@@ -67,6 +68,27 @@ implementation
             NewPrimary.Ammo := 0;
             NewSecondary.WType := ult.secondaryWeaponHold;
             NewSecondary.Ammo := 0;
+            Player.ForceWeapon(TWeapon(NewPrimary), TWeapon(NewSecondary));
+        finally
+            NewPrimary.Free();
+            NewSecondary.Free();
+        end;
+    end;
+
+    procedure GiveNewWeaponsUltimate(Player: TActivePlayer; primary, secondary: Byte; pAmmo, sAmmo: Smallint);
+    var NewPrimary, NewSecondary: TNewWeapon;
+    begin
+        UltimateInstances[Player.ID].primaryWeaponHold := Player.Primary.WType;
+        UltimateInstances[Player.ID].secondaryWeaponHold := Player.Secondary.WType;
+
+        // Create Flamer armor
+        NewPrimary := TNewWeapon.Create();
+        NewSecondary := TNewWeapon.Create();
+        try
+            NewPrimary.WType := primary; //FLAMER
+            NewPrimary.Ammo := pAmmo; // Full one
+            NewSecondary.WType := secondary; // Hands
+            NewSecondary.Ammo := sAmmo; // To reload - for hands it doesn't matter.
             Player.ForceWeapon(TWeapon(NewPrimary), TWeapon(NewSecondary));
         finally
             NewPrimary.Free();

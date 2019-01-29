@@ -173,7 +173,7 @@ begin
                     if UltimateInstances[Players.Player[i].ID].tickCount > 120 then UltimateInstances[Players.Player[i].ID].tickCount := 120;
 
                     if UltimateInstances[Players.Player[i].ID].tickCount = 120 then begin 
-                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 1;
+                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 50;
                         UltimateInstances[Players.Player[i].ID].tickCount := 0;
                     end;
                     
@@ -210,6 +210,9 @@ begin
                     UltimateInstances[Players.Player[i].ID].isActive := true;
                     UltimateInstances[Players.Player[i].ID].doTheUltimate(Players.Player[i]);
                 end;
+
+                // GAMBIARRA -> FLANK CLASS
+                if  (Players.Player[i].KeyFlagThrow) and (playerUltimate.isActive) and (PlayerClassInstances[Players.Player[i].ID].classType=CLASS_TYPE_FLANK) then UltimateInstances[Players.Player[i].ID].doTheUltimate(Players.Player[i]);
             end;
 
             // Render the player UI
@@ -307,19 +310,51 @@ begin
 end;
 
 procedure SC3OnPlayerCommand (Player: TActivePlayer; Text: string);
+var PCLASS:Byte;
 begin
+    PCLASS := CLASS_TYPE_NONE;
     if Text='!coords' then Player.Tell(floattostr(Player.X) + ',' + floattostr(Player.Y));
     if Text='!class pyro' then begin
         Player.Tell('Changing your class to PYRO');
         DestroyPlayerClass(Player.ID);
-        CreatePlayerClass(CLASS_TYPE_PYRO, Player);
+        PCLASS := CLASS_TYPE_PYRO;
     end;
     if Text='!class heavy' then begin
         Player.Tell('Changing your class to HEAVY ARMOR');
         DestroyPlayerClass(Player.ID);
-        CreatePlayerClass(CLASS_TYPE_HEAVY_ARMOR, Player);
+        PCLASS := CLASS_TYPE_HEAVY_ARMOR;
     end;
-    if Text='!health' then Player.Tell(floattostr(Player.Health));
+    if Text='!class medic' then begin
+        Player.Tell('Changing your class to MEDIC');
+        DestroyPlayerClass(Player.ID);
+        PCLASS := CLASS_TYPE_MEDIC;
+    end;
+    if Text='!class sniper' then begin
+        Player.Tell('Changing your class to SNIPER');
+        DestroyPlayerClass(Player.ID);
+        PCLASS := CLASS_TYPE_SNIPER;
+    end;
+    if Text='!class spy' then begin
+        Player.Tell('Changing your class to SPY');
+        PCLASS := CLASS_TYPE_SPY;
+    end;
+    if Text='!class gunslinger' then begin
+        Player.Tell('Changing your class to GUNSLINGER');
+        PCLASS := CLASS_TYPE_GUNSLINGER;
+    end;
+    if Text='!class radio' then begin
+        Player.Tell('Changing your class to RADIO');
+        PCLASS := CLASS_TYPE_RADIO;
+    end;
+    if Text='!class flank' then begin
+        Player.Tell('Changing your class to FLANK');
+        PCLASS := CLASS_TYPE_FLANK;
+    end;
+
+    if PCLASS <> CLASS_TYPE_NONE then begin
+        DestroyPlayerClass(Player.ID);
+        CreatePlayerClass(PCLASS, Player);
+    end;
 end;
 
 procedure SC3OnPlayerLeave (Player: TActivePlayer; Kicked: Boolean);
@@ -352,14 +387,25 @@ begin
             calc := round(Damage);
             calc := calc div 10;
         end;
-        WriteLn('[MAIN] Player Damage: '+floattostr(Damage));
-        WriteLn('[MAIN] Damage calc: '+inttostr(calc));
         calc := UltimateInstances[Shooter.ID].percentage + calc;
         if calc > 100 then UltimateInstances[Shooter.ID].percentage := 100
         else UltimateInstances[Shooter.ID].percentage := calc;
     end;
+
+    if (UltimateInstances[Shooter.ID].isActive) and (PlayerClassInstances[Shooter.ID].classType=CLASS_TYPE_GUNSLINGER) then Damage := Damage/3;
+
+    if (UltimateInstances[Shooter.ID].isActive) and (PlayerClassInstances[Shooter.ID].classType=CLASS_TYPE_SNIPER) and (Damage>=Victim.Health) then begin
+        WriteLn('[MAIN] Bow damage from:'+inttostr(Shooter.ID)+' to:'+inttostr(Victim.ID));
+        CreateBullet(Victim.X-10, Victim.Y, 100, 0, 100, 7, Shooter.ID);
+    end;
+
     Result := Damage;
 
+end;
+
+procedure SC3OnPlayerKill(Killer, Victim: TActivePlayer; BulletId: Byte);
+begin
+    if UltimateInstances[Victim.ID].isActive then ResetUltimate(Victim.ID);
 end;
 
 begin
@@ -395,5 +441,6 @@ begin
     for i:=1 to 10 do begin 
         Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
         Players.Player[i].OnDamage := @SC3OnPlayerDamage;
+        Players.Player[i].OnKill := @SC3OnPlayerKill;
     end;
 end.

@@ -10,6 +10,7 @@ interface
     end;
 
     const
+        CLASS_TYPE_NONE = 0;
         CLASS_TYPE_PYRO = 1;
         CLASS_TYPE_HEAVY_ARMOR = 2;
         CLASS_TYPE_MEDIC = 3;
@@ -34,6 +35,30 @@ interface
     procedure HeayArmorUltimateEffectTrigger(Player: TActivePlayer);
     procedure HeayArmorCancelUltimateEffectTrigger(Player: TActivePlayer);
 
+    { SNIPER }
+    procedure SniperUltimateEffect(Player: TActivePlayer);
+    procedure SniperCacnelUltimateEffect(Player: TActivePlayer);
+
+    { MEDIC }
+    procedure MedicUltimateEffect(Player: TActivePlayer);
+    procedure MedicCancelUltimateEffect(Player: TActivePlayer);
+
+    { SPY }
+    procedure SpyUltimateEffect(Player: TActivePlayer);
+    procedure SpyCancelUltimateEffect(Player: TActivePlayer);
+
+    { GUNSLINGER }
+    procedure GunslingerUltimateEffect(Player: TActivePlayer);
+    procedure GunslingerCancelUltimateEffect(Player: TActivePlayer);
+
+    { RADIO }
+    procedure RadioUltimateEffect(Player: TActivePlayer);
+    procedure RadioCancelUltimateEffect(Player: TActivePlayer);
+
+    { FLANK }
+    procedure FlankUltimateEffect(Player: TActivePlayer);
+    procedure FlankCancelUltimateEffect(Player: TActivePlayer);
+
     var 
         PlayerClassInstances: array[1..32] of TPlayerClass;
         ClassUltimateTime: array[1..8] of Byte;
@@ -48,46 +73,21 @@ implementation
     { ULTIMATE EFFECTS TRIGGER }
     { PYRO }
     procedure PyroUltimateEffectTrigger(Player: TActivePlayer);
-    var
-        playerClass: TPlayerClass;
-        NewPrimary, NewSecondary: TNewWeapon;
     begin
-        GetPlayerClass(Player.ID, playerClass);
-
-        UltimateInstances[Player.ID].primaryWeaponHold := Player.Primary.WType;
-        UltimateInstances[Player.ID].secondaryWeaponHold := Player.Secondary.WType;
-
-        // Create Flamer armor
-        NewPrimary := TNewWeapon.Create();
-        NewSecondary := TNewWeapon.Create();
-        try
-            NewPrimary.WType := 14; //FLAMER
-            NewPrimary.Ammo := 200; // Full one
-            NewSecondary.WType := 255; // Hands
-            NewSecondary.Ammo := 0; // To reload - for hands it doesn't matter.
-            Players.Player[playerClass.playerID].ForceWeapon(TWeapon(NewPrimary), TWeapon(NewSecondary));
-        finally
-            NewPrimary.Free();
-            NewSecondary.Free();
-        end;
+        GiveNewWeaponsUltimate(Player, 14, 255, 200, 0);
         SC3PlaySoundForAll('../scenery-gfx/payp.png', Player);
         Player.Say('Im on flames!!!');
     end;
 
     procedure PyroCancelUltimateEffectTrigger(Player: TActivePlayer);
-    var 
-        playerClass: TPlayerClass;
     begin
-        GetPlayerClass(Player.ID, playerClass);
-        ResetWeaponUltimate(Player);
+        ResetWeaponsUltimate(Player);
     end;
 
     { HEAVY ARMOR }
     procedure HeayArmorUltimateEffectTrigger(Player: TActivePlayer);
     var _bfcount:Byte;
-        playerClass: TPlayerClass;
     begin
-        GetPlayerClass(Player.ID, playerClass);
         for _bfcount := 1 to 32 do begin
             if (Players.Player[_bfcount].Alive) and (Players.Player[_bfcount].Team = Player.Team) then Players.Player[_bfcount].GiveBonus(3);
         end;
@@ -99,6 +99,94 @@ implementation
     procedure HeayArmorCancelUltimateEffectTrigger(Player: TActivePlayer);
     begin
     end;
+
+    { SNIPER }
+    procedure SniperUltimateEffect(Player: TActivePlayer);
+    begin
+        GiveNewWeaponsUltimate(Player, 15, 255, 1, 0);
+        Player.Say('You can run but you can'+chr(39)+'t hide!');
+    end;
+
+    procedure SniperCacnelUltimateEffect(Player: TActivePlayer);
+    begin
+        ResetWeaponsUltimate(Player);
+    end;
+
+    { MEDIC }
+    procedure MedicUltimateEffect(Player: TActivePlayer);
+    var _pcount:Byte;
+    begin
+        for _pcount:=1 to 10 do if Players.Player[_pcount].Team=Player.Team then Players.Player[_pcount].Health := 150;
+        Player.Say('I'+chr(39)+'ll protect you');
+    end;
+
+    procedure MedicCancelUltimateEffect(Player: TActivePlayer);
+    begin
+    end;
+
+    { SPY }
+    procedure SpyUltimateEffect(Player: TActivePlayer);
+    begin
+        Player.GiveBonus(1);
+        GiveNewWeaponsUltimate(Player, 0, 0, 12, 12);
+    end;
+
+    procedure SpyCancelUltimateEffect(Player: TActivePlayer);
+    begin
+        ResetWeaponsUltimate(Player);
+    end;
+    
+    { GUNSLINGER }
+    procedure GunslingerUltimateEffect(Player: TActivePlayer);
+    begin
+        Player.GiveBonus(2);
+    end;
+
+    procedure GunslingerCancelUltimateEffect(Player: TActivePlayer);
+    begin
+    end;
+
+    { RADIO }
+    procedure RadioUltimateEffect(Player: TActivePlayer);
+    begin
+        CreateBullet(Player.MouseAimX-100, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
+        CreateBullet(Player.MouseAimX-50, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
+        CreateBullet(Player.MouseAimX, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
+        CreateBullet(Player.MouseAimX+50, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
+        CreateBullet(Player.MouseAimX+100, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
+    end;
+
+    procedure RadioCancelUltimateEffect(Player: TActivePlayer);
+    begin
+    end;
+
+    { FLANK }
+    procedure FlankUltimateEffect(Player: TActivePlayer);
+    var dx, dy, ar, velX, velY:Single;
+    begin
+        if UltimateInstances[Player.ID].data = 1 then begin
+            dx := Player.MouseAimX - Player.X;
+            dy := Player.MouseAimY - Player.Y;
+
+            // WriteLn('dX: '+floattostr(dx)+' dY: '+floattostr(dy));
+
+            ar := arctan(dx/dy);
+            if dx > 0 then velX := abs(ar);
+            if dx < 0 then velX := -1 * (abs(ar));
+            if dy > 0 then velY := abs(ar);
+            if dy < 0 then velY := -1 * (abs(ar));
+
+            // WriteLn('velX: '+floattostr(velX)+' velY: '+floattostr(velY));
+
+            Player.SetVelocity(velX*8, velY*8);
+        end else UltimateInstances[Player.ID].data := 1;
+        
+    end;
+
+    procedure FlankCancelUltimateEffect(Player: TActivePlayer);
+    begin
+        UltimateInstances[Player.ID].data := 0;
+    end;   
 
     { PLAYER CLASS CREATOR }
     procedure CreatePlayerClass (classType: Byte; Player: TActivePlayer);
@@ -123,6 +211,56 @@ implementation
             Players[Player.ID].WeaponActive[9] := true;
             Players[Player.ID].WeaponActive[3] := true;
         end;
+
+        // CLASS SNIPER
+        if classType=CLASS_TYPE_SNIPER then begin
+            doUlt := @SniperUltimateEffect;
+            cancelUt := @SniperCacnelUltimateEffect;
+            Players[Player.ID].WeaponActive[8] := true;
+            Players[Player.ID].WeaponActive[6] := true;
+        end;
+
+        // CLASS MEDIC
+        if classType=CLASS_TYPE_MEDIC then begin
+            doUlt := @MedicUltimateEffect;
+            cancelUt := @MedicCancelUltimateEffect;
+            Players[Player.ID].WeaponActive[2] := true;
+            Players[Player.ID].WeaponActive[5] := true;
+        end;
+
+        // CLASS SPY
+        if classType=CLASS_TYPE_SPY then begin
+            doUlt := @SpyUltimateEffect;
+            cancelUt := @SpyCancelUltimateEffect;
+            Players[Player.ID].WeaponActive[1] := true;
+            Players[Player.ID].WeaponActive[4] := true;
+        end;
+
+        // CLASS GUNSLINGER
+        if classType=CLASS_TYPE_GUNSLINGER then begin
+            doUlt := @GunslingerUltimateEffect;
+            cancelUt := @GunslingerCancelUltimateEffect;
+            Players[Player.ID].WeaponActive[1] := true;
+        end;
+
+        // CLASS RADIO
+        if classType=CLASS_TYPE_RADIO then begin
+            doUlt := @RadioUltimateEffect;
+            cancelUt := @RadioCancelUltimateEffect;
+            Players[Player.ID].WeaponActive[4] := true;
+            Players[Player.ID].WeaponActive[7] := true;
+            Players[Player.ID].WeaponActive[9] := true;
+        end;
+
+        // CLASS FLANK
+        if classType=CLASS_TYPE_FLANK then begin
+            doUlt := @FlankUltimateEffect;
+            cancelUt := @FlankCancelUltimateEffect;
+            Players[Player.ID].WeaponActive[2] := true;
+            Players[Player.ID].WeaponActive[5] := true;
+            Players[Player.ID].WeaponActive[6] := true;
+        end;
+
 
         Player.Damage(Player.ID, 999);
         CreateUltimate(Player, ClassUltimateTime[classType], doUlt, cancelUt);
@@ -164,10 +302,10 @@ implementation
         ClassUltimateTime[CLASS_TYPE_PYRO] := 10;
         ClassUltimateTime[CLASS_TYPE_HEAVY_ARMOR] := 1;
         ClassUltimateTime[CLASS_TYPE_MEDIC] := 1;
-        ClassUltimateTime[CLASS_TYPE_SNIPER] := 15;
-        ClassUltimateTime[CLASS_TYPE_SPY] := 1;
+        ClassUltimateTime[CLASS_TYPE_SNIPER] := 5;
+        ClassUltimateTime[CLASS_TYPE_SPY] := 25;
         ClassUltimateTime[CLASS_TYPE_FLANK] := 10;
-        ClassUltimateTime[CLASS_TYPE_RADIO] := 5;
+        ClassUltimateTime[CLASS_TYPE_RADIO] := 1;
         ClassUltimateTime[CLASS_TYPE_GUNSLINGER] := 15;
     end.
 
