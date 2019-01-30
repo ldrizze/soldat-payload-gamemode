@@ -2,10 +2,14 @@ uses Collider, Payload, PlayerClass;
 
 var 
     Payload:TPayload;
-    UltLevel:Byte;
     waypointOffset:Byte;
     waypointX:Single;
     waypointY:Single;
+    fixTextTime:Smallint;
+    checkPointQuantity:Byte;
+    checkPointPerc: array[1..10] of Byte;
+    _pwcount:Byte;
+    _checkpointSize:single;
 
 procedure RenderPayload();
     var baseX, baseY: Single;
@@ -14,64 +18,64 @@ begin
     baseY := Payload.Collider.Y + 20;
 
     // The Payload
-    Players.WorldText(5, 'b', 600, RGB(80,80,80), 0.2, baseX + 110, baseY-46);
-    Players.WorldText(6, 'l', 600, RGB(50,105,30), 0.3, baseX + 40, baseY-36);
-    Players.WorldText(7, '`', 600, RGB(50,105,30), 1.0, baseX + 114, baseY-75); 
-    Players.WorldText(8, '.', 600, RGB(50,105,30), 1.0, baseX + 100, baseY-172);   
-    Players.WorldText(9, '.', 600, RGB(50,105,30), 1, baseX + 100, baseY-154);
-    Players.WorldText(10, '.', 600, RGB(50,105,30), 1, baseX + 129, baseY-154);
-    Players.WorldText(11, '_', 600, RGB(50,50,50), 0.5, baseX + 35, baseY-78);
-    Players.WorldText(12, '_', 600, RGB(50,50,50), 0.5, baseX + 115, baseY-78);
-    Players.WorldText(13, '_', 600, RGB(50,50,50), 0.5, baseX + 90, baseY-78);    
-    Players.WorldText(14, '_', 600, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
-    Players.WorldText(15, '_', 600, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
-    Players.WorldText(16, '_', 600, RGB(50,105,30), 0.5, baseX + 90, baseY-80);
+    Players.WorldText(5, 'b', fixTextTime, RGB(80,80,80), 0.2, baseX + 110, baseY-46);
+    Players.WorldText(6, 'l', fixTextTime, RGB(50,105,30), 0.3, baseX + 40, baseY-36);
+    Players.WorldText(7, '`', fixTextTime, RGB(50,105,30), 1.0, baseX + 114, baseY-75); 
+    Players.WorldText(8, '.', fixTextTime, RGB(50,105,30), 1.0, baseX + 100, baseY-172);   
+    Players.WorldText(9, '.', fixTextTime, RGB(50,105,30), 1, baseX + 100, baseY-154);
+    Players.WorldText(10, '.', fixTextTime, RGB(50,105,30), 1, baseX + 129, baseY-154);
+    Players.WorldText(11, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 35, baseY-78);
+    Players.WorldText(12, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 115, baseY-78);
+    Players.WorldText(13, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 90, baseY-78);    
+    Players.WorldText(14, '_', fixTextTime, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
+    Players.WorldText(15, '_', fixTextTime, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
+    Players.WorldText(16, '_', fixTextTime, RGB(50,105,30), 0.5, baseX + 90, baseY-80);
    
-    Players.WorldText(17, chr(149), 600, RGB(80,80,80), 0.19, baseX + 55, baseY-10);
-    Players.WorldText(18, chr(149), 600, RGB(80,80,80), 0.19, baseX + 145, baseY-10);
-    Players.WorldText(19, '.', 600, RGB(80,80,80), 0.29, baseX + 53.5, baseY-29);
-    Players.WorldText(20, '.', 600, RGB(80,80,80), 0.29, baseX + 61, baseY-29);
-    Players.WorldText(21, '.', 600, RGB(80,80,80), 0.29, baseX + 143.5, baseY-29);
-    Players.WorldText(22, '.', 600, RGB(80,80,80), 0.29, baseX + 151, baseY-29);
+    Players.WorldText(17, chr(149), fixTextTime, RGB(80,80,80), 0.19, baseX + 55, baseY-10);
+    Players.WorldText(18, chr(149), fixTextTime, RGB(80,80,80), 0.19, baseX + 145, baseY-10);
+    Players.WorldText(19, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 53.5, baseY-29);
+    Players.WorldText(20, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 61, baseY-29);
+    Players.WorldText(21, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 143.5, baseY-29);
+    Players.WorldText(22, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 151, baseY-29);
 
 
-    Players.WorldText(23, '.', 600, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);      
-    Players.WorldText(24, '`', 600, RGB(105,215,190), 0.7, baseX + 124, baseY-59);  
-    Players.WorldText(25, '.', 600, RGB(105,215,190), 0.8, baseX + 109, baseY-141.5);
-    Players.WorldText(26, '|', 600, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3); 
-    Players.WorldText(27, '.', 600, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5); 
-    Players.WorldText(28, '.', 600, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5); 
-    Players.WorldText(29, '.', 600, RGB(210,210,0), 0.1, baseX + 47, baseY-10); 
+    Players.WorldText(23, '.', fixTextTime, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);      
+    Players.WorldText(24, '`', fixTextTime, RGB(105,215,190), 0.7, baseX + 124, baseY-59);  
+    Players.WorldText(25, '.', fixTextTime, RGB(105,215,190), 0.8, baseX + 109, baseY-141.5);
+    Players.WorldText(26, '|', fixTextTime, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3); 
+    Players.WorldText(27, '.', fixTextTime, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5); 
+    Players.WorldText(28, '.', fixTextTime, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5); 
+    Players.WorldText(29, '.', fixTextTime, RGB(210,210,0), 0.1, baseX + 47, baseY-10); 
     
-    Players.WorldText(30, '.', 600, RGB(200,0,0), 0.6, baseX + 77, baseY-94.5);
-    Players.WorldText(31, chr(187), 600, RGB(240,0,0), 0.30, baseX + 56, baseY-39);
-    Players.WorldText(32, '>', 600, RGB(200,0,0), 0.12, baseX + 103.5, baseY-16.5);
-    Players.WorldText(33, '>', 600, RGB(200,0,0), 0.12, baseX + 101.5, baseY-16.5);
-    Players.WorldText(34, '>', 600, RGB(200,0,0), 0.12, baseX + 99.5, baseY-16.5);
-    Players.WorldText(35, '>', 600, RGB(200,0,0), 0.12, baseX + 97.5, baseY-16.5);
-    Players.WorldText(36, '>', 600, RGB(200,0,0), 0.12, baseX + 95.5, baseY-16.5);
+    Players.WorldText(30, '.', fixTextTime, RGB(200,0,0), 0.6, baseX + 77, baseY-94.5);
+    Players.WorldText(31, chr(187), fixTextTime, RGB(240,0,0), 0.30, baseX + 56, baseY-39);
+    Players.WorldText(32, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 103.5, baseY-16.5);
+    Players.WorldText(33, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 101.5, baseY-16.5);
+    Players.WorldText(34, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 99.5, baseY-16.5);
+    Players.WorldText(35, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 97.5, baseY-16.5);
+    Players.WorldText(36, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 95.5, baseY-16.5);
     
-    Players.WorldText(38, '-', 600, RGB(170,170,170), 0.60, baseX + 56, baseY-72.5);
-    Players.WorldText(39, '-', 600, RGB(130,130,130), 0.60, baseX + 56, baseY-71.5);
-    Players.WorldText(40, '-', 600, RGB(100,100,100), 0.60, baseX + 56, baseY-70.5);
-    Players.WorldText(41, '-', 600, RGB(80,80,80), 0.60, baseX + 56, baseY-69.5);
-    Players.WorldText(42, '-', 600, RGB(60,60,60), 0.60, baseX + 56, baseY-68.5);
-    Players.WorldText(43, '_', 600, RGB(40,40,25), 0.375, baseX + 56, baseY-67.0);
-    Players.WorldText(44, 'Y', 600, RGB(10,10,10), 0.05, baseX + 97, baseY-2);
-    Players.WorldText(45, 'Y', 600, RGB(10,10,10), 0.05, baseX + 66, baseY-2);
+    Players.WorldText(38, '-', fixTextTime, RGB(170,170,170), 0.60, baseX + 56, baseY-72.5);
+    Players.WorldText(39, '-', fixTextTime, RGB(130,130,130), 0.60, baseX + 56, baseY-71.5);
+    Players.WorldText(40, '-', fixTextTime, RGB(100,100,100), 0.60, baseX + 56, baseY-70.5);
+    Players.WorldText(41, '-', fixTextTime, RGB(80,80,80), 0.60, baseX + 56, baseY-69.5);
+    Players.WorldText(42, '-', fixTextTime, RGB(60,60,60), 0.60, baseX + 56, baseY-68.5);
+    Players.WorldText(43, '_', fixTextTime, RGB(40,40,25), 0.375, baseX + 56, baseY-67.0);
+    Players.WorldText(44, 'Y', fixTextTime, RGB(10,10,10), 0.05, baseX + 97, baseY-2);
+    Players.WorldText(45, 'Y', fixTextTime, RGB(10,10,10), 0.05, baseX + 66, baseY-2);
 
-    Players.WorldText(46, chr(149), 600, RGB(60,60,60), 0.18, baseX + 56, baseY-8);
-    Players.WorldText(47, chr(149), 600, RGB(60,60,60), 0.18, baseX + 146, baseY-8);
-    Players.WorldText(48, '.', 600, RGB(60,60,60), 0.28, baseX + 54.5, baseY-27);
-    Players.WorldText(49, '.', 600, RGB(60,60,60), 0.28, baseX + 62, baseY-27);
-    Players.WorldText(50, '.', 600, RGB(60,60,60), 0.28, baseX + 144.5, baseY-27);
-    Players.WorldText(51, '.', 600, RGB(60,60,60), 0.28, baseX + 152, baseY-27);
+    Players.WorldText(46, chr(149), fixTextTime, RGB(60,60,60), 0.18, baseX + 56, baseY-8);
+    Players.WorldText(47, chr(149), fixTextTime, RGB(60,60,60), 0.18, baseX + 146, baseY-8);
+    Players.WorldText(48, '.', fixTextTime, RGB(60,60,60), 0.28, baseX + 54.5, baseY-27);
+    Players.WorldText(49, '.', fixTextTime, RGB(60,60,60), 0.28, baseX + 62, baseY-27);
+    Players.WorldText(50, '.', fixTextTime, RGB(60,60,60), 0.28, baseX + 144.5, baseY-27);
+    Players.WorldText(51, '.', fixTextTime, RGB(60,60,60), 0.28, baseX + 152, baseY-27);
 
-    Players.WorldText(52, chr(187), 600, RGB(45,90,18), 0.15, baseX + 123, baseY-18);
-    Players.WorldText(54, '-', 600, RGB(255,100,0), 0.20, baseX + 148, baseY-2);
-    Players.WorldText(55, '-', 600, RGB(255,200,0), 0.15, baseX + 150, baseY+8);
-    Players.WorldText(56, '-', 600, RGB(255,100,0), 0.20, baseX + 58, baseY-2);
-    Players.WorldText(57, '-', 600, RGB(255,200,0), 0.15, baseX + 60, baseY+8);
+    Players.WorldText(52, chr(187), fixTextTime, RGB(45,90,18), 0.15, baseX + 123, baseY-18);
+    Players.WorldText(54, '-', fixTextTime, RGB(255,100,0), 0.20, baseX + 148, baseY-2);
+    Players.WorldText(55, '-', fixTextTime, RGB(255,200,0), 0.15, baseX + 150, baseY+8);
+    Players.WorldText(56, '-', fixTextTime, RGB(255,100,0), 0.20, baseX + 58, baseY-2);
+    Players.WorldText(57, '-', fixTextTime, RGB(255,200,0), 0.15, baseX + 60, baseY+8);
 
     // External Collider for moving the car
     //Players.WorldText(100, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
@@ -91,15 +95,15 @@ procedure RenderPlayerUI(Player: TActivePlayer);
 begin
 
     // Ultimate bar
-    Player.BigText(120, '||', 600, RGB(0,0,0), 0.1, 10, 383);
-    Player.BigText(121, '||', 600, RGB(0,0,0), 0.1, 10, 372);
-    Player.BigText(122, '||', 600, RGB(0,0,0), 0.1, 10, 361);
-    Player.BigText(123, '||', 600, RGB(0,0,0), 0.1, 10, 350);
-    Player.BigText(124, '||', 600, RGB(0,0,0), 0.1, 10, 339);
-    Player.BigText(125, '||', 600, RGB(0,0,0), 0.1, 10, 328);
+    Player.BigText(120, '||', fixTextTime, RGB(0,0,0), 0.1, 10, 383);
+    Player.BigText(121, '||', fixTextTime, RGB(0,0,0), 0.1, 10, 372);
+    Player.BigText(122, '||', fixTextTime, RGB(0,0,0), 0.1, 10, 361);
+    Player.BigText(123, '||', fixTextTime, RGB(0,0,0), 0.1, 10, 350);
+    Player.BigText(124, '||', fixTextTime, RGB(0,0,0), 0.1, 10, 339);
+    Player.BigText(125, '||', fixTextTime, RGB(0,0,0), 0.1, 10, 328);
 
-    Player.BigText(126, '_', 600, RGB(0,0,0), 0.08, 12, 318);
-    Player.BigText(127, '_', 600, RGB(0,0,0), 0.08, 12, 384);
+    Player.BigText(126, '_', fixTextTime, RGB(0,0,0), 0.08, 12, 318);
+    Player.BigText(127, '_', fixTextTime, RGB(0,0,0), 0.08, 12, 384);
 
     // Desenha os %
     GetPlayerClass(Player.ID, playerClass);
@@ -118,13 +122,35 @@ begin
             if playerUltimate.isActive then ultColor := RGB(255, 255, 255)
             else ultColor := RGB(0,255,0);
         end;
-        Player.BigText(60+i, '.', 600, ultColor, 0.24, 10, 298 + (5 * (22-i)));
+        Player.BigText(60+i, '.', fixTextTime, ultColor, 0.24, 10, 298 + (5 * (22-i)));
     end;
 
     // Type
     if playerUltimate.isActive then numericRepresentation := inttostr(playerUltimate.duration - playerUltimate.durationCount)+'s'
     else numericRepresentation := inttostr(percentage)+'%';
-    Player.BigText(108, numericRepresentation, 600, RGB(255,255,255), 0.05, 10, 400);
+    Player.BigText(108, numericRepresentation, fixTextTime, RGB(255,255,255), 0.05, 10, 400);
+
+end;
+
+procedure RenderGameUI(Player: TActivePlayer);
+var x,y,h,m:Smallint;
+    _cc:Byte;
+begin
+    x := 360;
+    y := -70;
+    h := Payload.gameTime div 60;
+    m := Payload.gameTime mod 60;
+    Player.BigText(200, '_', fixTextTime, RGB(255, 255, 255), 0.5, x, y);
+    Player.BigText(201, '_', fixTextTime, RGB(255, 255, 255), 0.5, x+58 , y);
+    Player.BigText(202, inttostr(h)+':'+inttostr(m), fixTextTime, RGB(255, 255, 255), 0.1, x+40, 0);
+
+    // Payload position
+    Player.BigText(203, chr(187), fixTextTime, RGB(0, 255, 0), 0.08, x + round((Payload.actualWalkSize*100)/Payload.totalWalkSize), y+92);
+
+    // Checkpoints position
+    for _cc:=1 to checkPointQuantity do begin
+        Player.BigText(204, chr(149), fixTextTime, RGB(0, 255, 0), 0.1, x + checkPointPerc[_cc] + 15, y+82);
+    end;
 
 end;
 
@@ -136,6 +162,7 @@ var
     calc: Smallint;
 begin
 
+    if not Payload.isEnd then begin
     // Init vars
     Payload.isMoving := false;
     Payload.isContested := false;
@@ -217,6 +244,7 @@ begin
 
             // Render the player UI
             if (Ticks mod 60)=0 then RenderPlayerUI(Players.Player[i]);
+            if (Ticks mod 60)=0 then RenderGameUI(Players.Player[i]);
         end;
     end;
     {
@@ -233,6 +261,7 @@ begin
         // Payload velocity
         Payload.xVel := Payload.xVel + Payload.velStep;
         if Payload.xVel > Payload.velMax then Payload.xVel := Payload.velMax;
+        Payload.actualWalkSize := Payload.actualWalkSize + Payload.xVel;
 
         // Calculate left X distance to the next waypoint
         waypointX := PayloadWaypoints[waypointOffset].X - Payload.Collider.X;
@@ -276,18 +305,23 @@ begin
             WriteLn('[MAIN] Waypoint REACHED!');
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then Payload.isEnd := true
             else begin
+                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 180;
                 waypointOffset := waypointOffset+1;
             end;
         end;
 
     end else Payload.xVel := 0;
 
+    // Upodate game time
+    if (Ticks mod 60)=0 then Payload.gameTime := Payload.gameTime-1;
+
     // Render payload
     RenderPayload();
-    //if (Ticks mod 300)=0 then RenderPayloadWaypoints();
+    if (Ticks mod 300)=0 then RenderPayloadWaypoints();
     { 
         PAYLOAD UPDATE LOGIC
     }
+    end;
 end;
 
 procedure OnPlayerCollidesOnPayload(Player: TActivePlayer; Side: Byte);
@@ -396,7 +430,7 @@ begin
 
     if (UltimateInstances[Shooter.ID].isActive) and (PlayerClassInstances[Shooter.ID].classType=CLASS_TYPE_SNIPER) and (Damage>=Victim.Health) then begin
         WriteLn('[MAIN] Bow damage from:'+inttostr(Shooter.ID)+' to:'+inttostr(Victim.ID));
-        CreateBullet(Victim.X-10, Victim.Y, 100, 0, 100, 7, Shooter.ID);
+        CreateBullet(Victim.X-10, Victim.Y, fixTextTime, 0, fixTextTime, 7, Shooter.ID);
     end;
 
     Result := Damage;
@@ -410,8 +444,9 @@ end;
 
 begin
     // Setup Vars
-    UltLevel := 0;
     waypointOffset := 2;
+    fixTextTime := 200;
+    checkPointQuantity := 0;
 
     // Create and setup the Payload and Payload Collider
     Payload.Collider := CollisionBox_Create(150, 70, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
@@ -423,6 +458,23 @@ begin
     Payload.xVel := 0.0;
     Payload.isEnd := false;
     Payload.isReached := false;
+    Payload.actualWalkSize := 0;
+    Payload.gameTime := 300;
+
+    Payload.totalWalkSize := GetWalkTotalSize();
+    WriteLn('[MAIN] Payload Waypoint total walk size: '+floattostr(Payload.totalWalkSize));
+
+    // Init vars for Game UI
+    for _pwcount:=2 to 254 do begin
+        if PayloadWaypoints[_pwcount].wayType=WAYTYPE_CHECKPOINT then begin
+            checkPointQuantity := checkPointQuantity + 1;
+            _checkpointSize := GetWaySize(PayloadWaypoints[_pwcount-1], PayloadWaypoints[_pwcount]);
+            _checkpointSize := (_checkpointSize*100)/Payload.totalWalkSize;
+            checkPointPerc[checkPointQuantity] := round(_checkpointSize);
+            WriteLn('[MAIN] Checkpoint Perc: '+inttostr(checkPointPerc[checkPointQuantity]));
+        end;
+        if PayloadWaypoints[_pwcount].wayType=WAYTYPE_END then break;
+    end;
 
     // Set Clock tick to update game logic
     Game.TickThreshold := 1; // 100 ms tick test

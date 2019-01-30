@@ -12,6 +12,9 @@ interface
             isReached: boolean;
             isEnd: boolean;
             reachTickCount: Smallint;
+            totalWalkSize: single;
+            actualWalkSize: single;
+            gameTime: Smallint; // In seconds
             Collider: CollisionBox;
             ExternalCollider: CollisionBox;
             OnPlayerCollision, OnPlayerExternalCollision: TOnPlayerCollision;
@@ -36,6 +39,8 @@ interface
 
     procedure AddWaypoint(wt:Byte; X,Y:single);
     procedure RenderPayloadWaypoints();
+    function GetWalkTotalSize():single;
+    function GetWaySize(p1,p2: TPayloadWaypoint):single;
 implementation
     procedure AddWaypoint(wt:Byte; X,Y:single);
     begin
@@ -50,9 +55,34 @@ implementation
     begin
         for _waycount:=1 to 254 do begin
             if not (PayloadWaypoints[_waycount].wayType = WAYTYPE_NONE) then begin
-                Players.WorldText(200+_waycount, chr(215), 61, Waytype_colors[PayloadWaypoints[_waycount].wayType], 0.1, PayloadWaypoints[_waycount].X, PayloadWaypoints[_waycount].Y);
+                Players.WorldText(200+_waycount, chr(215), 120, Waytype_colors[PayloadWaypoints[_waycount].wayType], 0.1, PayloadWaypoints[_waycount].X, PayloadWaypoints[_waycount].Y);
             end;
         end;
+    end;
+
+    function GetWalkTotalSize():single;
+    var _r: single;
+        _pwcount: Byte;
+        _x,_y:single;
+    begin
+        _r := 0;
+        for _pwcount:=2 to 255 do begin
+            _x := abs(PayloadWaypoints[_pwcount-1].X - PayloadWaypoints[_pwcount].X);
+            _y := abs(PayloadWaypoints[_pwcount-1].Y - PayloadWaypoints[_pwcount].Y);
+            _r := _r + ( sqrt( (_x*_x) + (_y*_y) ) );
+            if PayloadWaypoints[_pwcount].wayType=WAYTYPE_END then break;
+        end;
+        Result := _r;
+    end;
+
+    function GetWaySize(p1,p2: TPayloadWaypoint):single;
+    var _r: single;
+        _x,_y:single;
+    begin
+        _x := abs(p1.X - p2.X);
+        _y := abs(p1.Y - p2.Y);
+        _r := sqrt( (_x*_x) + (_y*_y) );
+        Result := _r;        
     end;
 
     var _waycount:Byte;
