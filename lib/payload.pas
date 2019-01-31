@@ -55,7 +55,7 @@ implementation
     begin
         for _waycount:=1 to 254 do begin
             if not (PayloadWaypoints[_waycount].wayType = WAYTYPE_NONE) then begin
-                Players.WorldText(200+_waycount, chr(215), 120, Waytype_colors[PayloadWaypoints[_waycount].wayType], 0.1, PayloadWaypoints[_waycount].X, PayloadWaypoints[_waycount].Y);
+                Players.WorldText(200+_waycount, chr(215), 310, Waytype_colors[PayloadWaypoints[_waycount].wayType], 0.1, PayloadWaypoints[_waycount].X, PayloadWaypoints[_waycount].Y);
             end;
         end;
     end;
@@ -101,6 +101,7 @@ implementation
         AddWaypoint(WAYTYPE_WAYPOINT, -2836, -350);
         AddWaypoint(WAYTYPE_CHECKPOINT, -2336, -315);
         AddWaypoint(WAYTYPE_WAYPOINT, -1836, -315);
+        AddWaypoint(WAYTYPE_CHECKPOINT, -1436, -315);
         AddWaypoint(WAYTYPE_END, -1336, -315);
     end.
 

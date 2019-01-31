@@ -7,9 +7,10 @@ var
     waypointY:Single;
     fixTextTime:Smallint;
     checkPointQuantity:Byte;
-    checkPointPerc: array[1..10] of Byte;
+    checkPointPerc: array[1..10] of Smallint;
     _pwcount:Byte;
     _checkpointSize:single;
+    _checkpointPerc:single;
 
 procedure RenderPayload();
     var baseX, baseY: Single;
@@ -133,25 +134,36 @@ begin
 end;
 
 procedure RenderGameUI(Player: TActivePlayer);
-var x,y,h,m:Smallint;
+var x,y,barSize,payloadPerc,cX,pX:Smallint;
     _cc:Byte;
 begin
     x := 360;
     y := -70;
-    h := Payload.gameTime div 60;
-    m := Payload.gameTime mod 60;
+    barSize := 125;
+    payloadPerc := round((Payload.actualWalkSize*100)/Payload.totalWalkSize);
+    pX := round((barSize*payloadPerc)/100);
+
     Player.BigText(200, '_', fixTextTime, RGB(255, 255, 255), 0.5, x, y);
     Player.BigText(201, '_', fixTextTime, RGB(255, 255, 255), 0.5, x+58 , y);
-    Player.BigText(202, inttostr(h)+':'+inttostr(m), fixTextTime, RGB(255, 255, 255), 0.1, x+40, 0);
 
     // Payload position
-    Player.BigText(203, chr(187), fixTextTime, RGB(0, 255, 0), 0.08, x + round((Payload.actualWalkSize*100)/Payload.totalWalkSize), y+92);
+    Player.BigText(203, chr(187), fixTextTime, RGB(0, 255, 0), 0.08, x + pX, y+92);
 
     // Checkpoints position
     for _cc:=1 to checkPointQuantity do begin
-        Player.BigText(204, chr(149), fixTextTime, RGB(0, 255, 0), 0.1, x + checkPointPerc[_cc] + 15, y+82);
+        cX := round((checkPointPerc[_cc] * barSize)/100);
+        Player.BigText(204+_cc, chr(149), fixTextTime, RGB(0, 255, 0), 0.1, x + cX, y+82);
     end;
 
+end;
+
+procedure RenderGameTimer(Player: TActivePlayer);
+var h,m,x:Smallint;
+begin
+    x := 360;
+    h := Payload.gameTime div 60;
+    m := Payload.gameTime mod 60;
+    Player.BigText(202, inttostr(h)+':'+inttostr(m), fixTextTime, RGB(255, 255, 255), 0.1, x+35, 0);
 end;
 
 procedure SC3GameLogicUpdate(Ticks: Integer);
@@ -244,7 +256,8 @@ begin
 
             // Render the player UI
             if (Ticks mod 60)=0 then RenderPlayerUI(Players.Player[i]);
-            if (Ticks mod 60)=0 then RenderGameUI(Players.Player[i]);
+            if (Ticks mod 120)=0 then RenderGameUI(Players.Player[i]);
+            if (Ticks mod 60)=0 then RenderGameTimer(Players.Player[i]);
         end;
     end;
     {
@@ -305,7 +318,7 @@ begin
             WriteLn('[MAIN] Waypoint REACHED!');
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then Payload.isEnd := true
             else begin
-                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 180;
+                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 120;
                 waypointOffset := waypointOffset+1;
             end;
         end;
@@ -447,13 +460,15 @@ begin
     waypointOffset := 2;
     fixTextTime := 200;
     checkPointQuantity := 0;
+    _checkpointSize := 0;
+    _checkpointSize := 0;
 
     // Create and setup the Payload and Payload Collider
     Payload.Collider := CollisionBox_Create(150, 70, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
     Payload.ExternalCollider := CollisionBox_Create(300, 200, PayloadWaypoints[1].X-100, PayloadWaypoints[1].Y-100);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
-    Payload.velStep := 0.005;
+    Payload.velStep := 0.002;
     Payload.velMax := 0.3;
     Payload.xVel := 0.0;
     Payload.isEnd := false;
@@ -466,11 +481,12 @@ begin
 
     // Init vars for Game UI
     for _pwcount:=2 to 254 do begin
+        _checkpointSize := _checkpointSize + GetWaySize(PayloadWaypoints[_pwcount-1], PayloadWaypoints[_pwcount]);
         if PayloadWaypoints[_pwcount].wayType=WAYTYPE_CHECKPOINT then begin
+            WriteLn('[MAIN] Checkpoint size: '+floattostr(_checkpointSize));
             checkPointQuantity := checkPointQuantity + 1;
-            _checkpointSize := GetWaySize(PayloadWaypoints[_pwcount-1], PayloadWaypoints[_pwcount]);
-            _checkpointSize := (_checkpointSize*100)/Payload.totalWalkSize;
-            checkPointPerc[checkPointQuantity] := round(_checkpointSize);
+            _checkpointPerc := (_checkpointSize*100)/Payload.totalWalkSize;
+            checkPointPerc[checkPointQuantity] := round(_checkpointPerc);
             WriteLn('[MAIN] Checkpoint Perc: '+inttostr(checkPointPerc[checkPointQuantity]));
         end;
         if PayloadWaypoints[_pwcount].wayType=WAYTYPE_END then break;
