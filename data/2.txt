@@ -1,0 +1,13 @@
+HEAVY ARMOR:
+Give Bulletproof vest
+to all alive teammates.
+
+TIME: Instantly
+
+PROS: Can hold on a fight against
+damage ultimates.
+
+CONS: Only give bulletproff vest
+to teammates alive.
+
+WEAPONS: FN Minimi, Ak-74

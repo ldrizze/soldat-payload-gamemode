@@ -1,0 +1,11 @@
+MEDIC:
+Heal 50% of all your teammates life every second 
+even if they are far from you
+
+TIME: 4s
+
+PROS: very usefull against low damage weapons.
+
+CONS: Useless against oneshot weapons.
+
+WEAPONS: Spas-12, HK MP5.

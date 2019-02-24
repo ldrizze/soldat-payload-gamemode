@@ -236,7 +236,7 @@ begin
                         calc := UltimateInstances[Players.Player[i].ID].duration - UltimateInstances[Players.Player[i].ID].durationCount;
                         calc := calc * 100;
                         calc := calc div UltimateInstances[Players.Player[i].ID].duration;
-                        Players.Player[i].Tell(inttostr(calc));
+                        // Players.Player[i].Tell(inttostr(calc));
                         UltimateInstances[Players.Player[i].ID].percentage := calc;
                     end;
 
@@ -469,16 +469,22 @@ end;
 
 procedure OnButtonClassClick(data:Byte;Player:TActivePlayer;offset:Byte);
 begin
-    DestroyPlayerClass(Player.ID);
-    CreatePlayerClass(data, Player);
-    MainUI[Player.ID].elements[offset].fColor := RGB(0,255,0);
+    if data <> CLASS_TYPE_NONE then begin
+        DestroyPlayerClass(Player.ID);
+        CreatePlayerClass(data, Player);
+        // MainUI[Player.ID].elements[offset].fColor := RGB(0,0,0);
+        // MainUI[Player.ID].elements[offset].bColor := RGB(255,255,255);
+    end;
     MainUI[Player.ID].enabled := false;
 end;
 
 procedure OnButtonClassHover(data:Byte;Player:TActivePlayer;offset:Byte);
 begin
     MainUI[Player.ID].elements[offset].fColor := RGB(255, 255, 255);
-    MainUI[Player.ID].elements[10].text := ClassDescription[data];
+
+    if data <> CLASS_TYPE_NONE then
+        MainUI[Player.ID].elements[11].text := ClassDescription[data]
+    else MainUI[Player.ID].elements[11].text := 'Exit from this menu';
 end;
 
 procedure OnButtonClassBlur(data:Byte;Player:TActivePlayer;offset:Byte);
@@ -545,10 +551,18 @@ begin
         // Player Interface
         MainUI[i].startLayer := 10;
         MainUI[i].enabled := false;
+
         UIAddButton(MainUI[i], 1, 100, 100, RGB(0,0,0), RGB(255,0,0), 'Pyro', CLASS_TYPE_PYRO, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
         UIAddButton(MainUI[i], 2, 100, 130, RGB(0,0,0), RGB(255,0,0), 'Heavy Armor', CLASS_TYPE_HEAVY_ARMOR, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 3, 100, 160, RGB(0,0,0), RGB(255,0,0), 'Medic', CLASS_TYPE_MEDIC, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 4, 100, 190, RGB(0,0,0), RGB(255,0,0), 'Sniper', CLASS_TYPE_SNIPER, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 5, 100, 220, RGB(0,0,0), RGB(255,0,0), 'Spy', CLASS_TYPE_SPY, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 6, 100, 250, RGB(0,0,0), RGB(255,0,0), 'Flank', CLASS_TYPE_FLANK, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 7, 100, 280, RGB(0,0,0), RGB(255,0,0), 'Radio', CLASS_TYPE_RADIO, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 8, 100, 310, RGB(0,0,0), RGB(255,0,0), 'Gunslinger', CLASS_TYPE_GUNSLINGER, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 9, 100, 400, RGB(255,255,255), RGB(0,255,0), 'Exit', CLASS_TYPE_NONE, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
 
-        UIAddText(MainUI[i], 9, 80, 80, RGB(0,0,0), 'Chose your class:');
-        UIAddText(MainUI[i], 10, 350, 80, RGB(255,255,255), '');
+        UIAddText(MainUI[i], 10, 80, 80, RGB(0,0,0), 'Chose your class:');
+        UIAddText(MainUI[i], 11, 350, 80, RGB(255,255,255), '');
     end;
 end.

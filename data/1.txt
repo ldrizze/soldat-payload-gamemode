@@ -1,2 +1,13 @@
-Class pyro description
-Line break
+PYRO:
+Burn your enemies with
+a flame gun.
+
+TIME: 10s
+
+PROS: Heavy against grouped
+enemies and to reveal a spy.
+
+CONS: You can only use the M79 weapon. 
+Can't hit enemies away from you.
+
+WEAPONS: M79 

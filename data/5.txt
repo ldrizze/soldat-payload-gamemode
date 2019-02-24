@@ -1,0 +1,13 @@
+SPY:
+You become invisible and your life start getting 
+healled slowly.
+
+TIME: 25s
+
+PROS: Your ultimate usage time is very long.
+
+CONS: Avoid being hitted, enemies can see more easily when
+you are hurted also you can use only a USSOCOM while you are in
+stealthy mode.
+
+WEAPONS: Desert Eagles, Steyr AUG.

@@ -1,0 +1,13 @@
+RADIO:
+Drop 5 law bullets above
+where you are aiming on.
+
+TIME: Instantly
+
+PROS: Can take down all the enemy
+team instantly.
+
+CONS: Cannot be used on
+small areas.
+
+WEAPONS: Steyr AUG, M79, Minimi
