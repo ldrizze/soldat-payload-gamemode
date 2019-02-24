@@ -1,4 +1,4 @@
-uses Collider, Payload, PlayerClass;
+uses Collider, Payload, PlayerClass, UI;
 
 var 
     Payload:TPayload;
@@ -8,9 +8,14 @@ var
     fixTextTime:Smallint;
     checkPointQuantity:Byte;
     checkPointPerc: array[1..10] of Smallint;
+    MainUI: array[1..10] of TUICanvas;
     _pwcount:Byte;
     _checkpointSize:single;
     _checkpointPerc:single;
+
+const
+  sLineBreak = {$IFDEF LINUX} #10 {$ENDIF} 
+               {$IFDEF MSWINDOWS} #13#10 {$ENDIF};
 
 procedure RenderPayload();
     var baseX, baseY: Single;
@@ -130,7 +135,6 @@ begin
     if playerUltimate.isActive then numericRepresentation := inttostr(playerUltimate.duration - playerUltimate.durationCount)+'s'
     else numericRepresentation := inttostr(percentage)+'%';
     Player.BigText(108, numericRepresentation, fixTextTime, RGB(255,255,255), 0.05, 10, 400);
-
 end;
 
 procedure RenderGameUI(Player: TActivePlayer);
@@ -183,7 +187,7 @@ begin
         PLAYER UPDATE LOGIC
     }
     // Players events
-    for i := 1 to 32 do begin
+    for i := 1 to 10 do begin
         
         // Only update events if player is alive
         if Players.Player[i].Alive then begin
@@ -255,6 +259,7 @@ begin
             end;
 
             // Render the player UI
+            UIRenderCanvas(MainUI[i], Players.Player[i]);
             if (Ticks mod 60)=0 then RenderPlayerUI(Players.Player[i]);
             if (Ticks mod 120)=0 then RenderGameUI(Players.Player[i]);
             if (Ticks mod 60)=0 then RenderGameTimer(Players.Player[i]);
@@ -403,6 +408,8 @@ begin
         PCLASS := CLASS_TYPE_FLANK;
     end;
 
+    if Text='!c' then MainUI[Player.ID].enabled := true;
+
     if PCLASS <> CLASS_TYPE_NONE then begin
         DestroyPlayerClass(Player.ID);
         CreatePlayerClass(PCLASS, Player);
@@ -460,6 +467,25 @@ begin
     if UltimateInstances[Victim.ID].isActive then ResetUltimate(Victim.ID);
 end;
 
+procedure OnButtonClassClick(data:Byte;Player:TActivePlayer;offset:Byte);
+begin
+    DestroyPlayerClass(Player.ID);
+    CreatePlayerClass(data, Player);
+    MainUI[Player.ID].elements[offset].fColor := RGB(0,255,0);
+    MainUI[Player.ID].enabled := false;
+end;
+
+procedure OnButtonClassHover(data:Byte;Player:TActivePlayer;offset:Byte);
+begin
+    MainUI[Player.ID].elements[offset].fColor := RGB(255, 255, 255);
+    MainUI[Player.ID].elements[10].text := ClassDescription[data];
+end;
+
+procedure OnButtonClassBlur(data:Byte;Player:TActivePlayer;offset:Byte);
+begin
+    MainUI[Player.ID].elements[offset].fColor := RGB(0, 0, 0);
+end;
+
 begin
     // Setup Vars
     waypointOffset := 2;
@@ -515,5 +541,14 @@ begin
         Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
         Players.Player[i].OnDamage := @SC3OnPlayerDamage;
         Players.Player[i].OnKill := @SC3OnPlayerKill;
+
+        // Player Interface
+        MainUI[i].startLayer := 10;
+        MainUI[i].enabled := false;
+        UIAddButton(MainUI[i], 1, 100, 100, RGB(0,0,0), RGB(255,0,0), 'Pyro', CLASS_TYPE_PYRO, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+        UIAddButton(MainUI[i], 2, 100, 130, RGB(0,0,0), RGB(255,0,0), 'Heavy Armor', CLASS_TYPE_HEAVY_ARMOR, @OnButtonClassClick, @OnButtonClassHover, @OnButtonClassBlur);
+
+        UIAddText(MainUI[i], 9, 80, 80, RGB(0,0,0), 'Chose your class:');
+        UIAddText(MainUI[i], 10, 350, 80, RGB(255,255,255), '');
     end;
 end.

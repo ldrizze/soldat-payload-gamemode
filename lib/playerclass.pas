@@ -20,6 +20,8 @@ interface
         CLASS_TYPE_RADIO = 7;
         CLASS_TYPE_GUNSLINGER = 8;
 
+        TOTAL_CLASSES = 8;
+
     procedure CreatePlayerClass (classType: Byte; Player: TActivePlayer);
     procedure GetPlayerClass (PlayerID: Byte; var r: TPlayerClass);
     procedure DestroyPlayerClass (PlayerID: Byte);
@@ -61,7 +63,8 @@ interface
 
     var 
         PlayerClassInstances: array[1..32] of TPlayerClass;
-        ClassUltimateTime: array[1..8] of Byte;
+        ClassUltimateTime: array[1..TOTAL_CLASSES] of Byte;
+        ClassDescription: array[1..TOTAL_CLASSES] of String;
 implementation
 
     procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer);
@@ -290,6 +293,7 @@ implementation
     end;
 
     // Start All
+    var filePath:String;
     begin
         // Initialize vars
         for i:=1 to 32 do begin 
@@ -307,6 +311,13 @@ implementation
         ClassUltimateTime[CLASS_TYPE_FLANK] := 10;
         ClassUltimateTime[CLASS_TYPE_RADIO] := 1;
         ClassUltimateTime[CLASS_TYPE_GUNSLINGER] := 15;
+
+        // Classes description
+        for i:=1 to TOTAL_CLASSES do begin
+            filePath := Script.Dir + 'data\'+inttostr(i)+'.txt';
+            if FileExists(filePath) then ClassDescription[i] := ReadFile(filePath)
+            else ClassDescription[i] := '';
+        end;
     end.
 
 end.
