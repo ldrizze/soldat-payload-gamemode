@@ -323,7 +323,12 @@ begin
             end;
         end;
 
-    end else Payload.xVel := 0;
+    end else begin
+        if not (Payload.xVel = 0) then begin
+            Payload.xVel := Payload.xVel - 0.02;
+            if Payload.xVel < 0 then Payload.xVel := 0;
+        end;
+    end;
 
     // Upodate game time
     if (Ticks mod 60)=0 then Payload.gameTime := Payload.gameTime-1;
