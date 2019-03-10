@@ -125,22 +125,20 @@ implementation
 	begin
 		Result := false;
 
-		mX := Player.MouseAimX - (round(Player.X) - 600);
-		mY := Player.MouseAimY - (round(Player.Y) - 400);
+		mX := Player.MouseAimX - (round(Player.X) - 650);
+		mY := Player.MouseAimY - (round(Player.Y) - 485);
 
-		mX := round( mX * 100 / 1200 );
-		mY := round( mY * 100 / 900 );
+		// Player.Tell('[UI] '+floattostr(mX) + ',' + floattostr(mY));
+
+		mX := round( (mX * 100) / 1296 );
+		mY := round( (mY * 100) / 970 );
 
 		mX := (mX/100) * 640;
 		mY := (mY/100) * 480;
 
-		// Player.Tell('[UI] '+floattostr(mX)+' > '+floattostr(c.x-10) + ' and '+floattostr(mX)+' < '+floattostr(c.x + 50));
-		// Player.Tell('[UI] '+floattostr(mY)+' > '+floattostr(c.y-10) + ' and '+floattostr(mY)+' < '+floattostr(c.y + 25));
-		// Player.Tell('[UI] '+floattostr(mX) + ',' + floattostr(mY));
-
 
 		if (mX > c.x-50) and (mX < c.x + 50) then
-			if(mY > c.y-43) and (mY < c.y-19) then Result := true;
+			if(mY > c.y-5) and (mY < c.y+20) then Result := true;
 
 	end;
 
