@@ -324,8 +324,8 @@ begin
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
             begin 
                 Payload.isEnd := true
-                Game.Teams[0].Score = 1;
-            end;
+                Game.Teams[0].Score := 1;
+            end
             else begin
                 if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 120;
                 waypointOffset := waypointOffset+1;
@@ -345,7 +345,7 @@ begin
     // Check game time end
     if Payload.gameTime <= 0 then begin
         Payload.isEnd := true;
-        Game.Teams[1].Score = 1;
+        Game.Teams[1].Score := 1;
     end;
 
     // Render payload
@@ -445,14 +445,6 @@ begin
     for _wcount:=1 to 10 do Players[Player.ID].WeaponActive[_wcount] := false;
 end;
 
-procedure SC3BeforeMapChange(Next: string);
-var _pcount:Byte;
-begin
-    for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
-    ResetPayloadWaypoints();
-    LoadPayloadWaypoints(Next);
-end;
-
 function SC3OnPlayerDamage(Shooter, Victim: TActivePlayer; Damage: Single; BulletId: Byte): Single;
 var calc:Smallint;
 begin
@@ -507,6 +499,7 @@ begin
     MainUI[Player.ID].elements[offset].fColor := RGB(0, 0, 0);
 end;
 
+procedure CreatePayload();
 begin
     // Setup Vars
     waypointOffset := 0;
@@ -543,7 +536,19 @@ begin
         end;
         if PayloadWaypoints[_pwcount].wayType=WAYTYPE_END then break;
     end;
+end;
 
+procedure SC3AfterMapChange(Next: string);
+var _pcount:Byte;
+begin
+    WriteLn('Next map: '+Next);
+    for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
+    ResetPayloadWaypoints();
+    LoadPayloadWaypoints(Next);
+    CreatePayload();
+end;
+
+begin
     // Set Clock tick to update game logic
     Game.TickThreshold := 1; // 100 ms tick test
     Game.OnClockTick := @SC3GameLogicUpdate;
@@ -555,7 +560,7 @@ begin
     Game.OnLeave := @SC3OnPlayerLeave;
 
     // Map events
-    Map.OnBeforeMapChange := @SC3BeforeMapChange;
+    Map.OnAfterMapChange := @SC3AfterMapChange;
 
     // Custom
     for i:=1 to 10 do begin 

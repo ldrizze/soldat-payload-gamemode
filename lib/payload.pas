@@ -67,40 +67,63 @@ implementation
     begin
         for _waycount:=1 to 254 do begin
             if PayloadWaypoints[_waycount].wayType = WAYTYPE_END then break;
-            if not (PayloadWaypoints[_waycount].wayType = WAYTYPE_NONE) do begin
+            if not (PayloadWaypoints[_waycount].wayType = WAYTYPE_NONE) then begin
                 PayloadWaypoints[_wpointer].wayType := WAYTYPE_NONE;
                 PayloadWaypoints[_wpointer].X := 0;
                 PayloadWaypoints[_wpointer].Y := 0;
             end;
         end;
-        _wpointer := 0;
+        _wpointer := 1;
     end;
 
     procedure LoadPayloadWaypoints(Mapname: String);
     var 
-        _filecontent:String;
-        _splittedlines,_data:TStringList;
-        _i,_wt:Byte;
+        _filecontent,_filePath:String;
+        _splittedlines:TStringList;
+        _data:String;
+        _x,_y:integer;
+        _i,_j,_wt,_sc1,_sc2,_sl:Byte;
     begin
-        filePath := Script.Dir + 'data\waypoints\'+Mapname+'.txt';
-        if FileExists(filePath) then begin
-            _filecontent := ReadFile(filePath);
+        _filePath := Script.Dir + 'data\waypoints\'+Mapname+'.txt';
+        WriteLn(_filePath);
+        if FileExists(_filePath) then begin
+            _filecontent := ReadFile(_filePath);
+            _filecontent := copy(_filecontent, 1, Length(_filecontent)-2); // Remove lb
+            _splittedlines := File.CreateStringList();
+            _splittedlines.Text := _filecontent;
 
-            _splittedlines.Delimiter := sLineBreak;
-            //_splittedlines.StrictDelimiter := true;
-            _splittedlines.DelimitedText := _filecontent;
+            for _i:=0 to _splittedlines.Count-1 do begin
+                _data := _splittedlines.Strings[_i];
+                _sc1 := 0;
+                _sc2 := 0;
+                _sl := Length(_data);
 
-            for _i:=0 to Length(_splittedlines) do begin
-                _data.Delimiter := ';';
-                _data.StrictDelimiter := true;
-                _data.DelimitedText := _splittedlines[i];
+                for _j:=1 to _sl do begin
+                    if _data[_j] = ';' then 
+                    begin
+                        if (_sc1 = 0) then 
+                        begin 
+                            _sc1 := _j;
+                        end 
+                        else if (_sc2 = 0) then 
+                        begin
+                            _sc2 := _j;
+                            break;
+                        end;
+                    end;
+                end;
 
-                if _data[0] = 'S' then _wt := WAYTYPE_START;
-                if _data[0] = 'W' then _wt := WAYTYPE_WAYPOINT;
-                if _data[0] = 'C' then _wt := WAYTYPE_CHECKPOINT;
-                if _data[0] = 'E' then _wt := WAYTYPE_END;
+                _x := strtoint(copy(_data, _sc1+1, _sc2-_sc1-1));
+                _y := strtoint(copy(_data, _sc2+1, _sl-_sc2+1));
 
-                AddPayloadWaypoint(_wt, strtoint(_data[1]), strtoint(_data[2]));
+                WriteLn('WAYPOINTS X Y: ' + inttostr(_x) + ':' + inttostr(_y));
+
+                if _data[1] = 'S' then _wt := WAYTYPE_START;
+                if _data[1] = 'W' then _wt := WAYTYPE_WAYPOINT;
+                if _data[1] = 'C' then _wt := WAYTYPE_CHECKPOINT;
+                if _data[1] = 'E' then _wt := WAYTYPE_END;
+
+                AddPayloadWaypoint(_wt, _x, _y);
             end;
         end;
     end;
@@ -140,14 +163,6 @@ implementation
         Waytype_colors[WAYTYPE_CHECKPOINT] := RGB(0,0,255);
         Waytype_colors[WAYTYPE_WAYPOINT] := RGB(255,255,0);
         Waytype_colors[WAYTYPE_END] := RGB(255,0,0);
-
-        // Map Waypoints
-        AddPayloadWaypoint(WAYTYPE_START, -3336, -315);
-        AddPayloadWaypoint(WAYTYPE_WAYPOINT, -2836, -350);
-        AddPayloadWaypoint(WAYTYPE_CHECKPOINT, -2336, -315);
-        AddPayloadWaypoint(WAYTYPE_WAYPOINT, -1836, -315);
-        AddPayloadWaypoint(WAYTYPE_CHECKPOINT, -1436, -315);
-        AddPayloadWaypoint(WAYTYPE_END, -1336, -315);
     end.
 
 end.
