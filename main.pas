@@ -436,6 +436,8 @@ procedure SC3BeforeMapChange(Next: string);
 var _pcount:Byte;
 begin
     for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
+    ResetPayloadWaypoints();
+    LoadPayloadWaypoints(Next);
 end;
 
 function SC3OnPlayerDamage(Shooter, Victim: TActivePlayer; Damage: Single; BulletId: Byte): Single;
@@ -494,7 +496,7 @@ end;
 
 begin
     // Setup Vars
-    waypointOffset := 2;
+    waypointOffset := 0;
     fixTextTime := 200;
     checkPointQuantity := 0;
     _checkpointSize := 0;
