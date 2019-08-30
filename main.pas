@@ -335,12 +335,18 @@ begin
         end;
     end;
 
-    // Upodate game time
+    // Update game time
     if (Ticks mod 60)=0 then Payload.gameTime := Payload.gameTime-1;
+
+    // Check game time end
+    if Payload.gameTime <= 0 then Payload.isEnd := true;
 
     // Render payload
     RenderPayload();
     if (Ticks mod 300)=0 then RenderPayloadWaypoints();
+
+    // END GAME!
+    if Payload.isEnd = true then Map.NextMap();
     { 
         PAYLOAD UPDATE LOGIC
     }
