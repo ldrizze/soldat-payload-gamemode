@@ -16,11 +16,11 @@ Map waypoints. Each waypoint should be in a new line. Waypoint file **MUST** hav
 
 **Example**
 *pl_payload_wip.xt*
-``
+```
 S;-3336;-315  -> Where payload spawn and starts
 W;-2836;-350  -> Waypoint to run
 C;-2336;-315  -> Checkpoint
 W;-1836;-315  -> Waypoint to run
 C;-1436;-315  -> Checkpoint
 E;-1336;-315  -> End waypoint and end game
-``
+```
