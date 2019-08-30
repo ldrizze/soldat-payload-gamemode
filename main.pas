@@ -321,7 +321,11 @@ begin
         // Detect collision payload x waypoint
         if CollisionBox_CollideWithXY(Payload.Collider, PayloadWaypoints[waypointOffset].X, PayloadWaypoints[waypointOffset].Y, 10, 10) = CollisionBox_FULL then begin
             WriteLn('[MAIN] Waypoint REACHED!');
-            if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then Payload.isEnd := true
+            if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
+            begin 
+                Payload.isEnd := true
+                Game.Teams[0].Score = 1;
+            end;
             else begin
                 if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 120;
                 waypointOffset := waypointOffset+1;
@@ -339,7 +343,10 @@ begin
     if (Ticks mod 60)=0 then Payload.gameTime := Payload.gameTime-1;
 
     // Check game time end
-    if Payload.gameTime <= 0 then Payload.isEnd := true;
+    if Payload.gameTime <= 0 then begin
+        Payload.isEnd := true;
+        Game.Teams[1].Score = 1;
+    end;
 
     // Render payload
     RenderPayload();
