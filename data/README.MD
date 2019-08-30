@@ -2,7 +2,7 @@
 ## classes
 Classes descriptions. The file **should** be the **id** of class with extension *.txt*.
 
-##waypoints
+## waypoints
 Map waypoints. Each waypoint should be in a new line. Waypoint file **MUST** have **start (S)** waypoint type and **end (E)** and least one **checkpoint (C)**.
 
 **WAY TYPES**
