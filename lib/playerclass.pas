@@ -314,7 +314,7 @@ implementation
 
         // Classes description
         for i:=1 to TOTAL_CLASSES do begin
-            filePath := Script.Dir + 'data\'+inttostr(i)+'.txt';
+            filePath := Script.Dir + 'data\classes\'+inttostr(i)+'.txt';
             if FileExists(filePath) then ClassDescription[i] := ReadFile(filePath)
             else ClassDescription[i] := '';
         end;
