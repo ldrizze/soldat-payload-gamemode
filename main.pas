@@ -285,7 +285,7 @@ begin
         waypointX := PayloadWaypoints[waypointOffset].X - Payload.Collider.X;
         waypointY := PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y;
         
-        WriteLn('[MAIN] waypointX: '+floattostr(waypointX));
+        // WriteLn('[MAIN] waypointX: '+floattostr(waypointX));
 
         // Update X position of Payload
         if waypointX > 0 then begin
@@ -324,7 +324,8 @@ begin
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
             begin 
                 Payload.isEnd := true
-                Game.Teams[1].Score := 1;
+                Game.Teams[1].Score := 0;
+                Game.Teams[2].Score := 1;
             end
             else begin
                 if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 120;
@@ -345,7 +346,8 @@ begin
     // Check game time end
     if Payload.gameTime <= 0 then begin
         Payload.isEnd := true;
-        Game.Teams[0].Score := 1;
+        Game.Teams[1].Score := 1;
+        Game.Teams[2].Score := 0;
     end;
 
     // Render payload

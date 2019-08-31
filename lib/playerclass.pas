@@ -107,7 +107,8 @@ implementation
     procedure SniperUltimateEffect(Player: TActivePlayer);
     begin
         GiveNewWeaponsUltimate(Player, 15, 255, 1, 0);
-        Player.Say('You can run but you can'+chr(39)+'t hide!');
+        SC3PlaySoundForAll('../scenery-gfx/pays.png', Player);
+        Player.Say('You are on my sight');
     end;
 
     procedure SniperCacnelUltimateEffect(Player: TActivePlayer);
@@ -121,6 +122,7 @@ implementation
     begin
         for _pcount:=1 to 10 do if Players.Player[_pcount].Team=Player.Team then Players.Player[_pcount].Health := 150;
         Player.Say('I'+chr(39)+'ll protect you');
+        SC3PlaySoundForAll('../scenery-gfx/paym.png', Player);
     end;
 
     procedure MedicCancelUltimateEffect(Player: TActivePlayer);
@@ -132,6 +134,8 @@ implementation
     begin
         Player.GiveBonus(1);
         GiveNewWeaponsUltimate(Player, 0, 0, 12, 12);
+        Player.Say('I'+chr(39)+'m Behind you.');
+        SC3PlaySoundForAll('../scenery-gfx/paysp.png', Player);
     end;
 
     procedure SpyCancelUltimateEffect(Player: TActivePlayer);
@@ -143,6 +147,8 @@ implementation
     procedure GunslingerUltimateEffect(Player: TActivePlayer);
     begin
         Player.GiveBonus(2);
+        Player.Say('I'+chr(39)+'M THE LAW!');
+        SC3PlaySoundForAll('../scenery-gfx/payg.png', Player);
     end;
 
     procedure GunslingerCancelUltimateEffect(Player: TActivePlayer);
@@ -157,6 +163,8 @@ implementation
         CreateBullet(Player.MouseAimX, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
         CreateBullet(Player.MouseAimX+50, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
         CreateBullet(Player.MouseAimX+100, Player.MouseAimY-300, 0, 0, 100, 12, Player.ID);
+        Player.Say('Lay them down!');
+        SC3PlaySoundForAll('../scenery-gfx/payr.png', Player);
     end;
 
     procedure RadioCancelUltimateEffect(Player: TActivePlayer);
@@ -182,7 +190,11 @@ implementation
             // WriteLn('velX: '+floattostr(velX)+' velY: '+floattostr(velY));
 
             Player.SetVelocity(velX*8, velY*8);
-        end else UltimateInstances[Player.ID].data := 1;
+        end else begin 
+            SC3PlaySoundForAll('../scenery-gfx/payf.png', Player);
+            Player.Say('You can run but you can'+chr(39)+'t hide!');
+            UltimateInstances[Player.ID].data := 1;
+        end;
         
     end;
 
