@@ -25,7 +25,7 @@ interface
     procedure CreatePlayerClass (classType: Byte; Player: TActivePlayer);
     procedure GetPlayerClass (PlayerID: Byte; var r: TPlayerClass);
     procedure DestroyPlayerClass (PlayerID: Byte);
-    procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer); 
+    procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer);
     procedure ResetWeaponsMenu(PlayerID: Byte);
 
     { ULTIMATE EFFECTS TRIGGER }
@@ -70,7 +70,13 @@ implementation
     procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer);
     var _pcount:Byte;
     begin
-        for _pcount := 1 to 32 do Players.Player[_pcount].PlaySound(sound, emmiter.X, emmiter.Y);
+        for _pcount := 1 to 32 do begin 
+            if not (emmiter = nil) then begin 
+                Players.Player[_pcount].PlaySound(sound, emmiter.X, emmiter.Y);
+            end else begin
+                Players.Player[_pcount].PlaySound(sound, Players.Player[_pcount].X, Players.Player[_pcount].Y);
+            end;
+        end;
     end;
 
     { ULTIMATE EFFECTS TRIGGER }

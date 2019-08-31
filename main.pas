@@ -328,7 +328,10 @@ begin
                 Game.Teams[2].Score := 1;
             end
             else begin
-                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 120;
+                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then begin 
+                    Payload.gameTime := Payload.gameTime + 120;
+                    SC3PlaySoundForAll('../sfx/ctf.wav', nil);
+                end;
                 waypointOffset := waypointOffset+1;
             end;
         end;
@@ -388,6 +391,9 @@ begin
     if Text='!coords' then begin
         Player.Tell(floattostr(Player.X) + ',' + floattostr(Player.Y));
         WriteLn(floattostr(Player.X) + ',' + floattostr(Player.Y));
+    end;
+    if Text='!s' then begin
+        SC3PlaySoundForAll('../sfx/ctf.wav', nil);
     end;
     if Text='!class pyro' then begin
         Player.Tell('Changing your class to PYRO');
