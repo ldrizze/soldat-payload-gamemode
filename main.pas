@@ -385,7 +385,10 @@ procedure SC3OnPlayerCommand (Player: TActivePlayer; Text: string);
 var PCLASS:Byte;
 begin
     PCLASS := CLASS_TYPE_NONE;
-    if Text='!coords' then Player.Tell(floattostr(Player.X) + ',' + floattostr(Player.Y));
+    if Text='!coords' then begin
+        Player.Tell(floattostr(Player.X) + ',' + floattostr(Player.Y));
+        WriteLn(floattostr(Player.X) + ',' + floattostr(Player.Y));
+    end;
     if Text='!class pyro' then begin
         Player.Tell('Changing your class to PYRO');
         DestroyPlayerClass(Player.ID);
