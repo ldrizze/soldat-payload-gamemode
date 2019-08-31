@@ -84,10 +84,10 @@ begin
     Players.WorldText(57, '-', fixTextTime, RGB(255,200,0), 0.15, baseX + 60, baseY+8);
 
     // External Collider for moving the car
-    //Players.WorldText(100, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
-    //Players.WorldText(101, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
-    //Players.WorldText(102, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
-    //Players.WorldText(103, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(100, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
+    Players.WorldText(101, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
+    Players.WorldText(102, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(103, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
 end;
 
 procedure RenderPlayerUI(Player: TActivePlayer);
@@ -285,7 +285,7 @@ begin
         waypointX := PayloadWaypoints[waypointOffset].X - Payload.Collider.X;
         waypointY := PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y;
         
-        // WriteLn('[MAIN] waypointX: '+floattostr(waypointX));
+        WriteLn('[MAIN] waypointX: '+floattostr(waypointX));
 
         // Update X position of Payload
         if waypointX > 0 then begin
@@ -324,7 +324,7 @@ begin
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
             begin 
                 Payload.isEnd := true
-                Game.Teams[0].Score := 1;
+                Game.Teams[1].Score := 1;
             end
             else begin
                 if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then Payload.gameTime := Payload.gameTime + 120;
@@ -345,7 +345,7 @@ begin
     // Check game time end
     if Payload.gameTime <= 0 then begin
         Payload.isEnd := true;
-        Game.Teams[1].Score := 1;
+        Game.Teams[0].Score := 1;
     end;
 
     // Render payload
@@ -499,14 +499,20 @@ begin
     MainUI[Player.ID].elements[offset].fColor := RGB(0, 0, 0);
 end;
 
-procedure CreatePayload();
+procedure CreatePayload(Mapname: String);
 begin
     // Setup Vars
-    waypointOffset := 0;
+    waypointOffset := 2;
     fixTextTime := 200;
     checkPointQuantity := 0;
     _checkpointSize := 0;
     _checkpointSize := 0;
+
+    // Reset and Load payload waypoints
+    ResetPayloadWaypoints();
+    LoadPayloadWaypoints(Mapname);
+
+    WriteLn('[MAIN] FIRST WAYPOINT: '+floattostr(PayloadWaypoints[1].X));
 
     // Create and setup the Payload and Payload Collider
     Payload.Collider := CollisionBox_Create(150, 70, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
@@ -539,13 +545,14 @@ begin
 end;
 
 procedure SC3AfterMapChange(Next: string);
+begin
+    CreatePayload(Next);
+end;
+
+procedure SC3BeforeMapChange(Next: String);
 var _pcount:Byte;
 begin
-    WriteLn('Next map: '+Next);
     for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
-    ResetPayloadWaypoints();
-    LoadPayloadWaypoints(Next);
-    CreatePayload();
 end;
 
 begin
@@ -560,6 +567,7 @@ begin
     Game.OnLeave := @SC3OnPlayerLeave;
 
     // Map events
+    Map.OnBeforeMapChange := @SC3BeforeMapChange;
     Map.OnAfterMapChange := @SC3AfterMapChange;
 
     // Custom

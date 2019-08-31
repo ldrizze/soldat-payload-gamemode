@@ -36,6 +36,7 @@ interface
         PayloadWaypoints: array[1..255] of TPayloadWaypoint;
         _wpointer:Byte;
         Waytype_colors: array[1..4] of Longint;
+        Waytype_names: array[1..4] of String;
 
     procedure AddPayloadWaypoint(wt:Byte; X,Y:single);
     procedure ResetPayloadWaypoints();
@@ -46,6 +47,7 @@ interface
 implementation
     procedure AddPayloadWaypoint(wt:Byte; X,Y:single);
     begin
+        WriteLn('[PAYLOAD] WAYPOINT ADDED: ' + Waytype_names[wt] + ':' + floattostr(X) + ':' + floattostr(Y));
         PayloadWaypoints[_wpointer].wayType := wt;
         PayloadWaypoints[_wpointer].X := X;
         PayloadWaypoints[_wpointer].Y := Y;
@@ -81,11 +83,12 @@ implementation
         _filecontent,_filePath:String;
         _splittedlines:TStringList;
         _data:String;
-        _x,_y:integer;
+        _x,_y:Single;
         _i,_j,_wt,_sc1,_sc2,_sl:Byte;
     begin
+        WriteLn('[PAYLOAD] Loading waypoints for map: '+Mapname)
         _filePath := Script.Dir + 'data\waypoints\'+Mapname+'.txt';
-        WriteLn(_filePath);
+        WriteLn('[PAYLOAD]'+_filePath);
         if FileExists(_filePath) then begin
             _filecontent := ReadFile(_filePath);
             _filecontent := copy(_filecontent, 1, Length(_filecontent)-2); // Remove lb
@@ -113,10 +116,9 @@ implementation
                     end;
                 end;
 
-                _x := strtoint(copy(_data, _sc1+1, _sc2-_sc1-1));
-                _y := strtoint(copy(_data, _sc2+1, _sl-_sc2+1));
+                _x := strtofloat(copy(_data, _sc1+1, _sc2-_sc1-1));
+                _y := strtofloat(copy(_data, _sc2+1, _sl-_sc2+1));
 
-                WriteLn('WAYPOINTS X Y: ' + inttostr(_x) + ':' + inttostr(_y));
 
                 if _data[1] = 'S' then _wt := WAYTYPE_START;
                 if _data[1] = 'W' then _wt := WAYTYPE_WAYPOINT;
@@ -125,7 +127,7 @@ implementation
 
                 AddPayloadWaypoint(_wt, _x, _y);
             end;
-        end;
+        end else WriteLn('[PAYLOAD][ERROR] Waypoints for map '+Mapname+' not found! Please, provide the waypoints creating a '+Mapname+'.txt in data > waypoints folder');
     end;
 
     function GetWalkTotalSize():single;
@@ -163,6 +165,12 @@ implementation
         Waytype_colors[WAYTYPE_CHECKPOINT] := RGB(0,0,255);
         Waytype_colors[WAYTYPE_WAYPOINT] := RGB(255,255,0);
         Waytype_colors[WAYTYPE_END] := RGB(255,0,0);
+
+        // Waytype names
+        Waytype_names[WAYTYPE_START] := 'S';
+        Waytype_names[WAYTYPE_CHECKPOINT] := 'C';
+        Waytype_names[WAYTYPE_WAYPOINT] := 'W';
+        Waytype_names[WAYTYPE_END] := 'E';
     end.
 
 end.
