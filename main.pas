@@ -191,9 +191,9 @@ begin
         
         // Only update events if player is alive
         if Players.Player[i].Alive then begin
-            // Inside Collider check
-            collisionDetector := CollisionBox_CollideWithXY(Payload.Collider, Players.Player[i].X, Players.Player[i].Y, 10, 10);
-            if collisionDetector <> CollisionBox_NONE then Payload.OnPlayerCollision(Players.Player[i], collisionDetector);
+            // Inside Collider check - PING ISSUES
+            // collisionDetector := CollisionBox_CollideWithXY(Payload.Collider, Players.Player[i].X, Players.Player[i].Y, 10, 10);
+            // if collisionDetector <> CollisionBox_NONE then Payload.OnPlayerCollision(Players.Player[i], collisionDetector);
 
             // External Collider check
             collisionDetector := CollisionBox_CollideWithXY(Payload.ExternalCollider, Players.Player[i].X, Players.Player[i].Y, 10, 10);
@@ -326,6 +326,7 @@ begin
                 Payload.isEnd := true
                 Game.Teams[1].Score := 0;
                 Game.Teams[2].Score := 1;
+                SC3PlaySoundForAll('../sfx/ctf.wav', nil);
             end
             else begin
                 if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then begin 
@@ -393,7 +394,7 @@ begin
         WriteLn(floattostr(Player.X) + ',' + floattostr(Player.Y));
     end;
     if Text='!s' then begin
-        SC3PlaySoundForAll('../sfx/ctf.wav', nil);
+        // SC3PlaySoundForAll('../sfx/ctf.wav', nil);
     end;
     if Text='!class pyro' then begin
         Player.Tell('Changing your class to PYRO');
@@ -531,7 +532,7 @@ begin
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
     Payload.velStep := 0.002;
-    Payload.velMax := 0.3;
+    Payload.velMax := 0.45;
     Payload.xVel := 0.0;
     Payload.isEnd := false;
     Payload.isReached := false;
