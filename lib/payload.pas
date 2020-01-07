@@ -87,7 +87,7 @@ implementation
         _i,_j,_wt,_sc1,_sc2,_sl:Byte;
     begin
         WriteLn('[PAYLOAD] Loading waypoints for map: '+Mapname)
-        _filePath := Script.Dir + 'data\waypoints\'+Mapname+'.txt';
+        _filePath := Script.Dir + 'data/waypoints/'+Mapname+'.txt';
         WriteLn('[PAYLOAD]'+_filePath);
         if FileExists(_filePath) then begin
             _filecontent := ReadFile(_filePath);
