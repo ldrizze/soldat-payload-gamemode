@@ -163,11 +163,17 @@ end;
 
 procedure RenderGameTimer(Player: TActivePlayer);
 var h,m,x:Smallint;
+    mm: String;
 begin
     x := 360;
     h := Payload.gameTime div 60;
     m := Payload.gameTime mod 60;
-    Player.BigText(202, inttostr(h)+':'+inttostr(m), fixTextTime, RGB(255, 255, 255), 0.1, x+35, 0);
+    if m < 10 then begin
+        mm := '0' + inttostr(m);
+    end else begin 
+        mm := inttostr(m);
+    end;
+    Player.BigText(202, inttostr(h)+':'+mm, fixTextTime, RGB(255, 255, 255), 0.1, x+35, 0);
 end;
 
 procedure SC3GameLogicUpdate(Ticks: Integer);
