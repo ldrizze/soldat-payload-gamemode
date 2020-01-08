@@ -320,7 +320,7 @@ begin
 
         // Detect collision payload x waypoint
         if CollisionBox_CollideWithXY(Payload.Collider, PayloadWaypoints[waypointOffset].X, PayloadWaypoints[waypointOffset].Y, 10, 10) = CollisionBox_FULL then begin
-            WriteLn('[MAIN] Waypoint REACHED!');
+            WriteLn('[MAIN] Waypoint' + inttostr(waypointOffset) + ' REACHED!');
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
             begin 
                 Payload.isEnd := true
@@ -356,7 +356,7 @@ begin
 
     // Render payload
     RenderPayload();
-    if (Ticks mod 300)=0 then RenderPayloadWaypoints();
+    // if (Ticks mod 300)=0 then RenderPayloadWaypoints();
 
     // END GAME!
     if Payload.isEnd = true then Map.NextMap();
@@ -434,6 +434,8 @@ begin
     end;
 
     if Text='!c' then MainUI[Player.ID].enabled := true;
+    if Text='!menu' then MainUI[Player.ID].enabled := true;
+    if Text='!class' then MainUI[Player.ID].enabled := true;
 
     if PCLASS <> CLASS_TYPE_NONE then begin
         DestroyPlayerClass(Player.ID);
@@ -537,7 +539,7 @@ begin
     Payload.isEnd := false;
     Payload.isReached := false;
     Payload.actualWalkSize := 0;
-    Payload.gameTime := 300;
+    Payload.gameTime := 480;
 
     Payload.totalWalkSize := GetWalkTotalSize();
     WriteLn('[MAIN] Payload Waypoint total walk size: '+floattostr(Payload.totalWalkSize));
@@ -569,7 +571,7 @@ end;
 
 begin
     // Set Clock tick to update game logic
-    Game.TickThreshold := 1; // 100 ms tick test
+    Game.TickThreshold := 10; // 100 ms tick test
     Game.OnClockTick := @SC3GameLogicUpdate;
 
     // Game on player leave
