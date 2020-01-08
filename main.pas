@@ -355,7 +355,7 @@ begin
     end;
 
     // Render payload
-    RenderPayload();
+    if (Ticks mod 10)=0 then RenderPayload();
     // if (Ticks mod 300)=0 then RenderPayloadWaypoints();
 
     // END GAME!
@@ -571,7 +571,7 @@ end;
 
 begin
     // Set Clock tick to update game logic
-    Game.TickThreshold := 10; // 100 ms tick test
+    Game.TickThreshold := 1; // 100 ms tick test
     Game.OnClockTick := @SC3GameLogicUpdate;
 
     // Game on player leave
