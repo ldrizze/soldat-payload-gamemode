@@ -9,12 +9,15 @@ var
     checkPointQuantity:Byte;
     checkPointPerc: array[1..10] of Smallint;
     MainUI: array[1..10] of TUICanvas;
+    SpawnCounter: Smallint;
+    PreviousSpawnCounter: Smallint;
     _pwcount:Byte;
     _checkpointSize:single;
     _checkpointPerc:single;
+    _gametick: Smallint;
 
 const
-  sLineBreak = {$IFDEF LINUX} #10 {$ENDIF} 
+  sLineBreak = {$IFDEF LINUX} #10 {$ENDIF}
                {$IFDEF MSWINDOWS} #13#10 {$ENDIF};
 
 procedure RenderPayload();
@@ -26,13 +29,13 @@ begin
     // The Payload
     Players.WorldText(5, 'b', fixTextTime, RGB(80,80,80), 0.2, baseX + 110, baseY-46);
     Players.WorldText(6, 'l', fixTextTime, RGB(50,105,30), 0.3, baseX + 40, baseY-36);
-    Players.WorldText(7, '`', fixTextTime, RGB(50,105,30), 1.0, baseX + 114, baseY-75); 
-    Players.WorldText(8, '.', fixTextTime, RGB(50,105,30), 1.0, baseX + 100, baseY-172);   
+    Players.WorldText(7, '`', fixTextTime, RGB(50,105,30), 1.0, baseX + 114, baseY-75);
+    Players.WorldText(8, '.', fixTextTime, RGB(50,105,30), 1.0, baseX + 100, baseY-172);
     Players.WorldText(9, '.', fixTextTime, RGB(50,105,30), 1, baseX + 100, baseY-154);
     Players.WorldText(10, '.', fixTextTime, RGB(50,105,30), 1, baseX + 129, baseY-154);
     Players.WorldText(11, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 35, baseY-78);
     Players.WorldText(12, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 115, baseY-78);
-    Players.WorldText(13, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 90, baseY-78);    
+    Players.WorldText(13, '_', fixTextTime, RGB(50,50,50), 0.5, baseX + 90, baseY-78);
     Players.WorldText(14, '_', fixTextTime, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
     Players.WorldText(15, '_', fixTextTime, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
     Players.WorldText(16, '_', fixTextTime, RGB(50,105,30), 0.5, baseX + 90, baseY-80);
@@ -44,14 +47,13 @@ begin
     Players.WorldText(21, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 143.5, baseY-29);
     Players.WorldText(22, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 151, baseY-29);
 
-
-    Players.WorldText(23, '.', fixTextTime, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);      
-    Players.WorldText(24, '`', fixTextTime, RGB(105,215,190), 0.7, baseX + 124, baseY-59);  
+    Players.WorldText(23, '.', fixTextTime, RGB(105,215,190), 0.3, baseX + 137.5, baseY-61.5);
+    Players.WorldText(24, '`', fixTextTime, RGB(105,215,190), 0.7, baseX + 124, baseY-59);
     Players.WorldText(25, '.', fixTextTime, RGB(105,215,190), 0.8, baseX + 109, baseY-141.5);
-    Players.WorldText(26, '|', fixTextTime, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3); 
-    Players.WorldText(27, '.', fixTextTime, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5); 
-    Players.WorldText(28, '.', fixTextTime, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5); 
-    Players.WorldText(29, '.', fixTextTime, RGB(210,210,0), 0.1, baseX + 47, baseY-10); 
+    Players.WorldText(26, '|', fixTextTime, RGB(50,105,30), 0.38, baseX + 123, baseY-49.3);
+    Players.WorldText(27, '.', fixTextTime, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5);
+    Players.WorldText(28, '.', fixTextTime, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5);
+    Players.WorldText(29, '.', fixTextTime, RGB(210,210,0), 0.1, baseX + 47, baseY-10);
     
     Players.WorldText(30, '.', fixTextTime, RGB(200,0,0), 0.6, baseX + 77, baseY-94.5);
     Players.WorldText(31, chr(187), fixTextTime, RGB(240,0,0), 0.30, baseX + 56, baseY-39);
@@ -84,10 +86,10 @@ begin
     Players.WorldText(57, '-', fixTextTime, RGB(255,200,0), 0.15, baseX + 60, baseY+8);
 
     // External Collider for moving the car
-    Players.WorldText(100, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
-    Players.WorldText(101, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
-    Players.WorldText(102, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
-    Players.WorldText(103, '`', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(100, '|-', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
+    Players.WorldText(101, '-|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
+    Players.WorldText(102, '|-', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(103, '-|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
 end;
 
 procedure RenderPlayerUI(Player: TActivePlayer);
@@ -111,7 +113,7 @@ begin
     Player.BigText(126, '_', fixTextTime, RGB(0,0,0), 0.08, 12, 318);
     Player.BigText(127, '_', fixTextTime, RGB(0,0,0), 0.08, 12, 384);
 
-    // Desenha os %
+    // Draw the percents of the ultimate
     GetPlayerClass(Player.ID, playerClass);
     GetUltimate(Player.ID, playerUltimate);
     if playerClass._created then percentage := playerUltimate.percentage
@@ -338,6 +340,10 @@ begin
                 if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then begin 
                     Payload.gameTime := Payload.gameTime + 120;
                     SC3PlaySoundForAll('../sfx/ctf.wav', nil);
+
+                    // Set the new respawn point
+                    Map.Spawns[SpawnCounter].X := Trunc(PayloadWaypoints[waypointOffset].X);
+                    Map.Spawns[SpawnCounter].Y := Trunc(PayloadWaypoints[waypointOffset].Y);
                 end;
                 waypointOffset := waypointOffset+1;
             end;
@@ -402,6 +408,12 @@ begin
     if Text='!s' then begin
         // SC3PlaySoundForAll('../sfx/ctf.wav', nil);
     end;
+
+    // Debug next map
+    if Text='!n' then begin
+        Map.NextMap();
+    end;
+
     if Text='!class pyro' then begin
         Player.Tell('Changing your class to PYRO');
         DestroyPlayerClass(Player.ID);
@@ -462,6 +474,8 @@ end;
 procedure SC3OnPlayerJoin(Player: TActivePlayer; Team: TTeam);
 var _wcount:Byte;
 begin
+    // Disable all weapons when player join
+    // Will be enabled when player choose a class
     for _wcount:=1 to 10 do Players[Player.ID].WeaponActive[_wcount] := false;
 end;
 
@@ -491,6 +505,7 @@ end;
 
 procedure SC3OnPlayerKill(Killer, Victim: TActivePlayer; BulletId: Byte);
 begin
+    // Reset Ultimate when player dies
     if UltimateInstances[Victim.ID].isActive then ResetUltimate(Victim.ID);
 end;
 
@@ -520,6 +535,7 @@ begin
 end;
 
 procedure CreatePayload(Mapname: String);
+var _newSpawnPoint: TNewSpawnPoint;
 begin
     // Setup Vars
     waypointOffset := 2;
@@ -550,17 +566,25 @@ begin
     Payload.totalWalkSize := GetWalkTotalSize();
     WriteLn('[MAIN] Payload Waypoint total walk size: '+floattostr(Payload.totalWalkSize));
 
+    // Get the Bravo Team Spawn point
+    // used in checkpoint updates
+    for _pwcount:=1 to 254 do begin
+        if (Map.Spawns[_pwcount].Active) and (Map.Spawns[_pwcount].Style = 2) then begin
+            SpawnCounter := _pwcount;
+            break;
+        end;
+    end;
+
     // Init vars for Game UI
     for _pwcount:=2 to 254 do begin
         _checkpointSize := _checkpointSize + GetWaySize(PayloadWaypoints[_pwcount-1], PayloadWaypoints[_pwcount]);
-        if PayloadWaypoints[_pwcount].wayType=WAYTYPE_CHECKPOINT then begin
+        if PayloadWaypoints[_pwcount].wayType = WAYTYPE_CHECKPOINT then begin
             WriteLn('[MAIN] Checkpoint size: '+floattostr(_checkpointSize));
             checkPointQuantity := checkPointQuantity + 1;
             _checkpointPerc := (_checkpointSize*100)/Payload.totalWalkSize;
             checkPointPerc[checkPointQuantity] := round(_checkpointPerc);
-            WriteLn('[MAIN] Checkpoint Perc: '+inttostr(checkPointPerc[checkPointQuantity]));
+            WriteLn('[MAIN] Checkpoint Perc: ' + inttostr(checkPointPerc[checkPointQuantity]));
         end;
-        if PayloadWaypoints[_pwcount].wayType=WAYTYPE_END then break;
     end;
 end;
 
@@ -575,9 +599,15 @@ begin
     for _pcount:=1 to 32 do DestroyPlayerClass(_pcount);
 end;
 
+// Script initialization
 begin
+    SpawnCounter := 1;
+    PreviousSpawnCounter := 0;
+    _gametick := 1;
+    WriteLn('[MAIN] Setting Game TickThreshold to ' + inttostr(_gametick));
+
     // Set Clock tick to update game logic
-    Game.TickThreshold := 1; // 100 ms tick test
+    Game.TickThreshold := _gametick; // 100 ms tick test
     Game.OnClockTick := @SC3GameLogicUpdate;
 
     // Game on player leave
@@ -590,7 +620,7 @@ begin
     Map.OnBeforeMapChange := @SC3BeforeMapChange;
     Map.OnAfterMapChange := @SC3AfterMapChange;
 
-    // Custom
+    // Create UI for all players
     for i:=1 to 10 do begin 
         Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
         Players.Player[i].OnDamage := @SC3OnPlayerDamage;
