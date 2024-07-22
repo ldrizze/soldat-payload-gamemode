@@ -119,7 +119,7 @@ begin
     if playerClass._created then percentage := playerUltimate.percentage
     else percentage := 0;
 
-    // Barrinhas
+    // Draw vertical bars
     for i:=10 to 22 do begin
         ultColor := RGB(255,0,0);
 
@@ -133,7 +133,7 @@ begin
         Player.BigText(60+i, '.', fixTextTime, ultColor, 0.24, 10, 298 + (5 * (22-i)));
     end;
 
-    // Type
+    // Active ultimate
     if playerUltimate.isActive then numericRepresentation := inttostr(playerUltimate.duration - playerUltimate.durationCount)+'s'
     else numericRepresentation := inttostr(percentage)+'%';
     Player.BigText(108, numericRepresentation, fixTextTime, RGB(255,255,255), 0.05, 10, 400);
@@ -235,7 +235,7 @@ begin
 
                 // Update all active ultimates
                 if UltimateInstances[Players.Player[i].ID].isActive then begin
-                    // UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
+                    UltimateInstances[Players.Player[i].ID].tickCount := UltimateInstances[Players.Player[i].ID].tickCount + Game.TickThreshold;
 
                     // Update duration count
                     if UltimateInstances[Players.Player[i].ID].tickCount > 60 then begin
@@ -267,7 +267,7 @@ begin
             end;
 
             // Render the player UI
-            UIRenderCanvas(MainUI[i], Players.Player[i]);
+            if (Ticks mod 15)=0 then UIRenderCanvas(MainUI[i], Players.Player[i]); // Render menu
             if (Ticks mod 60)=0 then RenderPlayerUI(Players.Player[i]);
             if (Ticks mod 120)=0 then RenderGameUI(Players.Player[i]);
             if (Ticks mod 60)=0 then RenderGameTimer(Players.Player[i]);
@@ -367,8 +367,8 @@ begin
     end;
 
     // Render payload
-    if (Ticks mod 10)=0 then RenderPayload();
-    // if (Ticks mod 300)=0 then RenderPayloadWaypoints();
+    if (Ticks mod 15)=0 then RenderPayload();
+    if (Ticks mod 300)=0 then RenderPayloadWaypoints();
 
     // END GAME!
     if Payload.isEnd = true then Map.NextMap();
@@ -555,8 +555,8 @@ begin
     Payload.ExternalCollider := CollisionBox_Create(300, 200, PayloadWaypoints[1].X-100, PayloadWaypoints[1].Y-100);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
-    Payload.velStep := 0.002;
-    Payload.velMax := 0.45;
+    Payload.velStep := 0.5;
+    Payload.velMax := 0.75;
     Payload.xVel := 0.0;
     Payload.isEnd := false;
     Payload.isReached := false;
@@ -603,7 +603,7 @@ end;
 begin
     SpawnCounter := 1;
     PreviousSpawnCounter := 0;
-    _gametick := 1;
+    _gametick := 5;
     WriteLn('[MAIN] Setting Game TickThreshold to ' + inttostr(_gametick));
 
     // Set Clock tick to update game logic
