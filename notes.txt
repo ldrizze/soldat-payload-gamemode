@@ -3,4 +3,4 @@ WorlText Point distances (text scale 1.0):
 	Sides: 29
 
 
-
+Disable anticheat kick, mandatory
