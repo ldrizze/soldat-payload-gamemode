@@ -136,7 +136,7 @@ implementation
         _x,_y:single;
     begin
         _r := 0;
-        for _pwcount:=2 to 255 do begin
+        for _pwcount:=2 to 254 do begin
             _x := abs(PayloadWaypoints[_pwcount-1].X - PayloadWaypoints[_pwcount].X);
             _y := abs(PayloadWaypoints[_pwcount-1].Y - PayloadWaypoints[_pwcount].Y);
             _r := _r + ( sqrt( (_x*_x) + (_y*_y) ) );
