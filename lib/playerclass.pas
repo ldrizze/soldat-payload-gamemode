@@ -213,7 +213,7 @@ implementation
     procedure CreatePlayerClass (classType: Byte; Player: TActivePlayer);
         var doUlt, cancelUt: TUltimateEffectTrigger;
     begin
-        WriteLn('[PLAYERCLASS] Creating class '+inttostr(classType)+' to:'+inttostr(Player.ID));
+        WriteLn('[PL][PLAYERCLASS] Creating class '+inttostr(classType)+' to:'+inttostr(Player.ID));
         PlayerClassInstances[Player.ID]._created := true;
         PlayerClassInstances[Player.ID].classType := classType;
         PlayerClassInstances[Player.ID].playerID := Player.ID;
@@ -285,7 +285,7 @@ implementation
 
         Player.Damage(Player.ID, 999);
         CreateUltimate(Player, ClassUltimateTime[classType], doUlt, cancelUt);
-        WriteLn('[PLAYERCLASS] class '+inttostr(classType)+' created to:'+inttostr(PlayerClassInstances[Player.ID].playerID));
+        WriteLn('[PL][PLAYERCLASS] class '+inttostr(classType)+' created to:'+inttostr(PlayerClassInstances[Player.ID].playerID));
     end;
 
     procedure ResetWeaponsMenu(PlayerID: Byte);
@@ -296,13 +296,13 @@ implementation
 
     procedure DestroyPlayerClass (PlayerID: Byte);
     begin
-        WriteLn('[PLAYERCLASS] Destroying class to:'+inttostr(PlayerID));
+        WriteLn('[PL][PLAYERCLASS] Destroying class to:'+inttostr(PlayerID));
         PlayerClassInstances[PlayerID]._created := false;
         PlayerClassInstances[PlayerID].classType := 0;
         PlayerClassInstances[PlayerID].playerID := 0;
         ResetUltimate(PlayerID);
         ResetWeaponsMenu(PlayerID);
-        WriteLn('[PLAYERCLASS] Destroying class successful to:'+inttostr(PlayerID));
+        WriteLn('[PL][PLAYERCLASS] Destroying class successful to:'+inttostr(PlayerID));
     end;
 
     procedure GetPlayerClass (PlayerID: Byte; var r: TPlayerClass);

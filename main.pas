@@ -15,6 +15,11 @@ var
     _checkpointSize:single;
     _checkpointPerc:single;
     _gametick: Smallint;
+    _renderStage: Smallint;
+    _maxRenderStages: Smallint;
+    _ultimateTimeMultiplier: Smallint;
+    _enableRenderPayloadWaypoints: Boolean;
+    _debugMode: Boolean;
 
 const
   sLineBreak = {$IFDEF LINUX} #10 {$ENDIF}
@@ -86,10 +91,10 @@ begin
     Players.WorldText(57, '-', fixTextTime, RGB(255,200,0), 0.15, baseX + 60, baseY+8);
 
     // External Collider for moving the car
-    Players.WorldText(100, '|-', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
-    Players.WorldText(101, '-|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
-    Players.WorldText(102, '|-', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
-    Players.WorldText(103, '-|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(100, '-|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y-20);
+    Players.WorldText(101, '|-', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y-20);
+    Players.WorldText(102, '-|', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
+    Players.WorldText(103, '|-', 600, RGB(0,255,0), 0.1, Payload.ExternalCollider.X + Payload.ExternalCollider.W, Payload.ExternalCollider.Y + Payload.ExternalCollider.H-20);
 end;
 
 procedure RenderPlayerUI(Player: TActivePlayer);
@@ -185,6 +190,10 @@ var
     playerUltimate:TUltimate;
     calc: Smallint;
 begin
+    // Update render stage
+    _renderStage := _renderStage + 1;
+
+    if _renderStage > _maxRenderStages then _renderStage := 0;
 
     if not Payload.isEnd then begin
     // Init vars
@@ -224,7 +233,7 @@ begin
                     if UltimateInstances[Players.Player[i].ID].tickCount > 120 then UltimateInstances[Players.Player[i].ID].tickCount := 120;
 
                     if UltimateInstances[Players.Player[i].ID].tickCount = 120 then begin 
-                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + 50;
+                        UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + (_ultimateTimeMultiplier * 1);
                         UltimateInstances[Players.Player[i].ID].tickCount := 0;
                     end;
                     
@@ -267,10 +276,10 @@ begin
             end;
 
             // Render the player UI
-            if (Ticks mod 15)=0 then UIRenderCanvas(MainUI[i], Players.Player[i]); // Render menu
-            if (Ticks mod 60)=0 then RenderPlayerUI(Players.Player[i]);
-            if (Ticks mod 120)=0 then RenderGameUI(Players.Player[i]);
-            if (Ticks mod 60)=0 then RenderGameTimer(Players.Player[i]);
+            if _renderStage = 0 then UIRenderCanvas(MainUI[i], Players.Player[i]); // Render menu
+            if _renderStage = 1 then RenderPlayerUI(Players.Player[i]);
+            if _renderStage = 2 then RenderGameUI(Players.Player[i]);
+            if _renderStage = 3 then RenderGameTimer(Players.Player[i]);
         end;
     end;
     {
@@ -293,7 +302,7 @@ begin
         waypointX := PayloadWaypoints[waypointOffset].X - Payload.Collider.X;
         waypointY := PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y;
         
-        // WriteLn('[MAIN] waypointX: '+floattostr(waypointX));
+        // WriteLn('[PL][MAIN] waypointX: '+floattostr(waypointX));
 
         // Update X position of Payload
         if waypointX > 0 then begin
@@ -306,16 +315,16 @@ begin
 
         // If waypointY is not 0, then track X% of the end
         if waypointY <> 0 then begin
-            // WriteLn('[MAIN] waypointY: '+floattostr(waypointY));
+            // WriteLn('[PL][MAIN] waypointY: '+floattostr(waypointY));
 
             waypointY := (Payload.xVel*100)/(abs(waypointX));
 
-            // WriteLn('[MAIN] MID waypointY: '+floattostr(waypointY));
+            // WriteLn('[PL][MAIN] MID waypointY: '+floattostr(waypointY));
 
             waypointY := waypointY/100;
             waypointY := (PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y) * waypointY;
 
-            // WriteLn('[MAIN] New waypointY: '+floattostr(waypointY));
+            // WriteLn('[PL][MAIN] New waypointY: '+floattostr(waypointY));
 
             if waypointX > 0 then begin
                 Payload.Collider.Y := Payload.Collider.Y + waypointY;
@@ -328,7 +337,7 @@ begin
 
         // Detect collision payload x waypoint
         if CollisionBox_CollideWithXY(Payload.Collider, PayloadWaypoints[waypointOffset].X, PayloadWaypoints[waypointOffset].Y, 10, 10) = CollisionBox_FULL then begin
-            WriteLn('[MAIN] Waypoint' + inttostr(waypointOffset) + ' REACHED!');
+            WriteLn('[PL][MAIN] Waypoint' + inttostr(waypointOffset) + ' REACHED!');
             if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
             begin 
                 Payload.isEnd := true
@@ -367,8 +376,8 @@ begin
     end;
 
     // Render payload
-    if (Ticks mod 15)=0 then RenderPayload();
-    if (Ticks mod 300)=0 then RenderPayloadWaypoints();
+    if _renderStage = 4 then RenderPayload();
+    if _renderStage = 5 then RenderPayloadWaypoints();
 
     // END GAME!
     if Payload.isEnd = true then Map.NextMap();
@@ -410,8 +419,21 @@ begin
     end;
 
     // Debug next map
-    if Text='!n' then begin
+    if (Text='!n') and _debugMode then begin
         Map.NextMap();
+    end;
+
+    // Toggle debug
+    if Text='!d' then begin
+        if _debugMode then begin
+            _debugMode := false;
+            _maxRenderStages := 4;
+            _ultimateTimeMultiplier := 1;
+        end else  begin
+            _debugMode := true;
+            _maxRenderStages := 5;
+            _ultimateTimeMultiplier := 100;
+        end;
     end;
 
     if Text='!class pyro' then begin
@@ -476,7 +498,7 @@ var _wcount:Byte;
 begin
     // Disable all weapons when player join
     // Will be enabled when player choose a class
-    for _wcount:=1 to 10 do Players[Player.ID].WeaponActive[_wcount] := false;
+    for _wcount:=2 to 10 do Players[Player.ID].WeaponActive[_wcount] := false;
 end;
 
 function SC3OnPlayerDamage(Shooter, Victim: TActivePlayer; Damage: Single; BulletId: Byte): Single;
@@ -495,7 +517,7 @@ begin
     if (UltimateInstances[Shooter.ID].isActive) and (PlayerClassInstances[Shooter.ID].classType=CLASS_TYPE_GUNSLINGER) then Damage := Damage/3;
 
     if (UltimateInstances[Shooter.ID].isActive) and (PlayerClassInstances[Shooter.ID].classType=CLASS_TYPE_SNIPER) and (Damage>=Victim.Health) then begin
-        WriteLn('[MAIN] Bow damage from:'+inttostr(Shooter.ID)+' to:'+inttostr(Victim.ID));
+        WriteLn('[PL][MAIN] Bow damage from:'+inttostr(Shooter.ID)+' to:'+inttostr(Victim.ID));
         CreateBullet(Victim.X-10, Victim.Y, fixTextTime, 0, fixTextTime, 7, Shooter.ID);
     end;
 
@@ -535,7 +557,6 @@ begin
 end;
 
 procedure CreatePayload(Mapname: String);
-var _newSpawnPoint: TNewSpawnPoint;
 begin
     // Setup Vars
     waypointOffset := 2;
@@ -548,15 +569,15 @@ begin
     ResetPayloadWaypoints();
     LoadPayloadWaypoints(Mapname);
 
-    WriteLn('[MAIN] FIRST WAYPOINT: '+floattostr(PayloadWaypoints[1].X));
+    WriteLn('[PL][MAIN] FIRST WAYPOINT: '+floattostr(PayloadWaypoints[1].X));
 
     // Create and setup the Payload and Payload Collider
     Payload.Collider := CollisionBox_Create(150, 70, PayloadWaypoints[1].X, PayloadWaypoints[1].Y);
     Payload.ExternalCollider := CollisionBox_Create(300, 200, PayloadWaypoints[1].X-100, PayloadWaypoints[1].Y-100);
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
-    Payload.velStep := 0.5;
-    Payload.velMax := 0.75;
+    Payload.velStep := 0.14;
+    Payload.velMax := 0.5;
     Payload.xVel := 0.0;
     Payload.isEnd := false;
     Payload.isReached := false;
@@ -564,7 +585,7 @@ begin
     Payload.gameTime := 480;
 
     Payload.totalWalkSize := GetWalkTotalSize();
-    WriteLn('[MAIN] Payload Waypoint total walk size: '+floattostr(Payload.totalWalkSize));
+    WriteLn('[PL][MAIN] Payload Waypoint total walk size: '+floattostr(Payload.totalWalkSize));
 
     // Get the Bravo Team Spawn point
     // used in checkpoint updates
@@ -579,11 +600,11 @@ begin
     for _pwcount:=2 to 254 do begin
         _checkpointSize := _checkpointSize + GetWaySize(PayloadWaypoints[_pwcount-1], PayloadWaypoints[_pwcount]);
         if PayloadWaypoints[_pwcount].wayType = WAYTYPE_CHECKPOINT then begin
-            WriteLn('[MAIN] Checkpoint size: '+floattostr(_checkpointSize));
+            WriteLn('[PL][MAIN] Checkpoint size: '+floattostr(_checkpointSize));
             checkPointQuantity := checkPointQuantity + 1;
             _checkpointPerc := (_checkpointSize*100)/Payload.totalWalkSize;
             checkPointPerc[checkPointQuantity] := round(_checkpointPerc);
-            WriteLn('[MAIN] Checkpoint Perc: ' + inttostr(checkPointPerc[checkPointQuantity]));
+            WriteLn('[PL][MAIN] Checkpoint Perc: ' + inttostr(checkPointPerc[checkPointQuantity]));
         end;
     end;
 end;
@@ -604,7 +625,12 @@ begin
     SpawnCounter := 1;
     PreviousSpawnCounter := 0;
     _gametick := 5;
-    WriteLn('[MAIN] Setting Game TickThreshold to ' + inttostr(_gametick));
+    _renderStage := 0;
+    _ultimateTimeMultiplier := 1;
+    _enableRenderPayloadWaypoints := false;
+    _debugMode := false;
+    _maxRenderStages := 4;
+    WriteLn('[PL][MAIN] Setting Game TickThreshold to ' + inttostr(_gametick));
 
     // Set Clock tick to update game logic
     Game.TickThreshold := _gametick; // 100 ms tick test

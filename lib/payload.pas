@@ -47,7 +47,7 @@ interface
 implementation
     procedure AddPayloadWaypoint(wt:Byte; X,Y:single);
     begin
-        WriteLn('[PAYLOAD] WAYPOINT ADDED: ' + Waytype_names[wt] + ':' + floattostr(X) + ':' + floattostr(Y));
+        WriteLn('[PL][PAYLOAD] WAYPOINT ADDED: ' + Waytype_names[wt] + ':' + floattostr(X) + ':' + floattostr(Y));
         PayloadWaypoints[_wpointer].wayType := wt;
         PayloadWaypoints[_wpointer].X := X;
         PayloadWaypoints[_wpointer].Y := Y;
@@ -86,9 +86,9 @@ implementation
         _x,_y:Single;
         _i,_j,_wt,_sc1,_sc2,_sl:Byte;
     begin
-        WriteLn('[PAYLOAD] Loading waypoints for map: '+Mapname)
+        WriteLn('[PL][PAYLOAD] Loading waypoints for map: '+Mapname)
         _filePath := Script.Dir + 'data/waypoints/'+Mapname+'.txt';
-        WriteLn('[PAYLOAD]'+_filePath);
+        WriteLn('[PL][PAYLOAD] '+_filePath);
         if FileExists(_filePath) then begin
             _filecontent := ReadFile(_filePath);
             _filecontent := copy(_filecontent, 1, Length(_filecontent)-2); // Remove lb
@@ -127,7 +127,7 @@ implementation
 
                 AddPayloadWaypoint(_wt, _x, _y);
             end;
-        end else WriteLn('[PAYLOAD][ERROR] Waypoints for map '+Mapname+' not found! Please, provide the waypoints creating a '+Mapname+'.txt in data > waypoints folder');
+        end else WriteLn('[PL][PAYLOAD][ERROR] Waypoints for map '+Mapname+' not found! Please, provide the waypoints creating a '+Mapname+'.txt in data > waypoints folder');
     end;
 
     function GetWalkTotalSize():single;
