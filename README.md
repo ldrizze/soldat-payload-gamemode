@@ -10,6 +10,9 @@ Clone/copy this repository to Soldat's server script folder. It can be named wha
 - Lower the sandbox level to 1 (set the Sandbox option to 1 in server.ini)
 - Use only maps that already has a waypoint file created for it. To see if has a waypoint file, check th data > waypoints folder, there's a file with same map name but with a .txt extension
 - To create a new waypoint file check the [data/README.MD](https://github.com/ldrizze/soldat-payload-gamemode/tree/master/data) in the data > waypoints folder
+- Use the Team Deathmatch mode for better experience
+- Set the Time_Limit to 30 minutes (or greater)
+- Raise the Teammatch_Limit to a higher value (e.g., 300)
 
 # Script tips
 Some tips about the script, how to extend it and how to read the unit files.

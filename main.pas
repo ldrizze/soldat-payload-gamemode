@@ -1,6 +1,6 @@
 uses Collider, Payload, PlayerClass, UI;
 
-var 
+var
     Payload:TPayload;
     waypointOffset:Byte;
     waypointX:Single;
@@ -44,7 +44,7 @@ begin
     Players.WorldText(14, '_', fixTextTime, RGB(50,105,30), 0.5, baseX + 35, baseY-80);
     Players.WorldText(15, '_', fixTextTime, RGB(120,120,120), 0.5, baseX + 115, baseY-80);
     Players.WorldText(16, '_', fixTextTime, RGB(50,105,30), 0.5, baseX + 90, baseY-80);
-   
+
     Players.WorldText(17, chr(149), fixTextTime, RGB(80,80,80), 0.19, baseX + 55, baseY-10);
     Players.WorldText(18, chr(149), fixTextTime, RGB(80,80,80), 0.19, baseX + 145, baseY-10);
     Players.WorldText(19, '.', fixTextTime, RGB(80,80,80), 0.29, baseX + 53.5, baseY-29);
@@ -59,7 +59,7 @@ begin
     Players.WorldText(27, '.', fixTextTime, RGB(210,210,200), 0.3, baseX + 162.5, baseY-55.5);
     Players.WorldText(28, '.', fixTextTime, RGB(210,40,0), 0.3, baseX + 38, baseY-38.5);
     Players.WorldText(29, '.', fixTextTime, RGB(210,210,0), 0.1, baseX + 47, baseY-10);
-    
+
     Players.WorldText(30, '.', fixTextTime, RGB(200,0,0), 0.6, baseX + 77, baseY-94.5);
     Players.WorldText(31, chr(187), fixTextTime, RGB(240,0,0), 0.30, baseX + 56, baseY-39);
     Players.WorldText(32, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 103.5, baseY-16.5);
@@ -67,7 +67,7 @@ begin
     Players.WorldText(34, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 99.5, baseY-16.5);
     Players.WorldText(35, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 97.5, baseY-16.5);
     Players.WorldText(36, '>', fixTextTime, RGB(200,0,0), 0.12, baseX + 95.5, baseY-16.5);
-    
+
     Players.WorldText(38, '-', fixTextTime, RGB(170,170,170), 0.60, baseX + 56, baseY-72.5);
     Players.WorldText(39, '-', fixTextTime, RGB(130,130,130), 0.60, baseX + 56, baseY-71.5);
     Players.WorldText(40, '-', fixTextTime, RGB(100,100,100), 0.60, baseX + 56, baseY-70.5);
@@ -130,7 +130,7 @@ begin
 
         calc := i-9;
         calc := round((calc*100)/13);
-        
+
         if percentage >= calc then begin
             if playerUltimate.isActive then ultColor := RGB(255, 255, 255)
             else ultColor := RGB(0,255,0);
@@ -177,14 +177,14 @@ begin
     m := Payload.gameTime mod 60;
     if m < 10 then begin
         mm := '0' + inttostr(m);
-    end else begin 
+    end else begin
         mm := inttostr(m);
     end;
     Player.BigText(202, inttostr(h)+':'+mm, fixTextTime, RGB(255, 255, 255), 0.1, x+35, 0);
 end;
 
 procedure SC3GameLogicUpdate(Ticks: Integer);
-var 
+var
     collisionDetector,i: Byte;
     playerClass:TPlayerClass;
     playerUltimate:TUltimate;
@@ -199,13 +199,13 @@ begin
     // Init vars
     Payload.isMoving := false;
     Payload.isContested := false;
-    
+
     {
         PLAYER UPDATE LOGIC
     }
     // Players events
     for i := 1 to 10 do begin
-        
+
         // Only update events if player is alive
         if Players.Player[i].Alive then begin
             // Inside Collider check - PING ISSUES
@@ -232,12 +232,12 @@ begin
                 if not UltimateInstances[Players.Player[i].ID].isActive then begin
                     if UltimateInstances[Players.Player[i].ID].tickCount > 120 then UltimateInstances[Players.Player[i].ID].tickCount := 120;
 
-                    if UltimateInstances[Players.Player[i].ID].tickCount = 120 then begin 
+                    if UltimateInstances[Players.Player[i].ID].tickCount = 120 then begin
                         UltimateInstances[Players.Player[i].ID].percentage := UltimateInstances[Players.Player[i].ID].percentage + (_ultimateTimeMultiplier * 1);
                         UltimateInstances[Players.Player[i].ID].tickCount := 0;
                     end;
-                    
-                    if UltimateInstances[Players.Player[i].ID].percentage >= 100 then begin 
+
+                    if UltimateInstances[Players.Player[i].ID].percentage >= 100 then begin
                         UltimateInstances[Players.Player[i].ID].percentage := 100;
                     end;
                 end;
@@ -265,7 +265,7 @@ begin
                 end;
 
                 // Players that activate the ultimate
-                if not (playerUltimate.isActive) and (Players.Player[i].KeyFlagThrow) and (UltimateInstances[Players.Player[i].ID].percentage=100) then begin 
+                if not (playerUltimate.isActive) and (Players.Player[i].KeyFlagThrow) and (UltimateInstances[Players.Player[i].ID].percentage=100) then begin
                     UltimateInstances[Players.Player[i].ID].tickCount := 0;
                     UltimateInstances[Players.Player[i].ID].isActive := true;
                     UltimateInstances[Players.Player[i].ID].doTheUltimate(Players.Player[i]);
@@ -276,7 +276,7 @@ begin
             end;
 
             // Render the player UI
-            if _renderStage = 0 then UIRenderCanvas(MainUI[i], Players.Player[i]); // Render menu
+            if (_renderStage > 0) and (_renderStage < 4) then UIRenderCanvas(MainUI[i], Players.Player[i]); // Render menu
             if _renderStage = 1 then RenderPlayerUI(Players.Player[i]);
             if _renderStage = 2 then RenderGameUI(Players.Player[i]);
             if _renderStage = 3 then RenderGameTimer(Players.Player[i]);
@@ -287,7 +287,7 @@ begin
     }
 
 
-    { 
+    {
         PAYLOAD UPDATE LOGIC
     }
     // Update payload position
@@ -301,7 +301,7 @@ begin
         // Calculate left X distance to the next waypoint
         waypointX := PayloadWaypoints[waypointOffset].X - Payload.Collider.X;
         waypointY := PayloadWaypoints[waypointOffset].Y - Payload.Collider.Y;
-        
+
         // WriteLn('[PL][MAIN] waypointX: '+floattostr(waypointX));
 
         // Update X position of Payload
@@ -338,19 +338,20 @@ begin
         // Detect collision payload x waypoint
         if CollisionBox_CollideWithXY(Payload.Collider, PayloadWaypoints[waypointOffset].X, PayloadWaypoints[waypointOffset].Y, 10, 10) = CollisionBox_FULL then begin
             WriteLn('[PL][MAIN] Waypoint' + inttostr(waypointOffset) + ' REACHED!');
-            if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then 
-            begin 
+            if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_END then
+            begin
                 Payload.isEnd := true
                 Game.Teams[1].Score := 0;
                 Game.Teams[2].Score := 1;
                 SC3PlaySoundForAll('../sfx/ctf.wav', nil);
             end
             else begin
-                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then begin 
+                if PayloadWaypoints[waypointOffset].wayType = WAYTYPE_CHECKPOINT then begin
                     Payload.gameTime := Payload.gameTime + 120;
                     SC3PlaySoundForAll('../sfx/ctf.wav', nil);
 
                     // Set the new respawn point
+                    WriteLn('[PL][MAIN] Setting new respawn point to ' + inttostr(Trunc(PayloadWaypoints[waypointOffset].X)) + ', ' + inttostr(Trunc(PayloadWaypoints[waypointOffset].Y)));
                     Map.Spawns[SpawnCounter].X := Trunc(PayloadWaypoints[waypointOffset].X);
                     Map.Spawns[SpawnCounter].Y := Trunc(PayloadWaypoints[waypointOffset].Y);
                 end;
@@ -381,7 +382,7 @@ begin
 
     // END GAME!
     if Payload.isEnd = true then Map.NextMap();
-    { 
+    {
         PAYLOAD UPDATE LOGIC
     }
     end;
@@ -389,7 +390,7 @@ end;
 
 procedure OnPlayerCollidesOnPayload(Player: TActivePlayer; Side: Byte);
 begin
-    
+
     if Side = CollisionBox_LEFT then Player.SetVelocity(-0.5 - Payload.xVel, Player.VelY);
     if Side = CollisionBox_RIGHT then Player.SetVelocity((Payload.xVel) + Payload.xVel, Player.VelY);
     if Side = CollisionBox_UP then begin
@@ -592,6 +593,7 @@ begin
     for _pwcount:=1 to 254 do begin
         if (Map.Spawns[_pwcount].Active) and (Map.Spawns[_pwcount].Style = 2) then begin
             SpawnCounter := _pwcount;
+            WriteLn('[PL][MAIN] Bravo Team Spawn Point found at index: '+inttostr(SpawnCounter));
             break;
         end;
     end;
@@ -624,7 +626,7 @@ end;
 begin
     SpawnCounter := 1;
     PreviousSpawnCounter := 0;
-    _gametick := 5;
+    _gametick := 3;
     _renderStage := 0;
     _ultimateTimeMultiplier := 1;
     _enableRenderPayloadWaypoints := false;
@@ -647,7 +649,7 @@ begin
     Map.OnAfterMapChange := @SC3AfterMapChange;
 
     // Create UI for all players
-    for i:=1 to 10 do begin 
+    for i:=1 to 10 do begin
         Players.Player[i].OnSpeak := @SC3OnPlayerCommand;
         Players.Player[i].OnDamage := @SC3OnPlayerDamage;
         Players.Player[i].OnKill := @SC3OnPlayerKill;
