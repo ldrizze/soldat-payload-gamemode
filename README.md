@@ -9,7 +9,7 @@ Clone/copy this repository to Soldat's server script folder. It can be named wha
 - Disable anti-cheat kick, some ultimates can be considered cheating
 - Lower the sandbox level to 1 (set the Sandbox option to 1 in server.ini)
 - Use only maps that already has a waypoint file created for it. To see if has a waypoint file, check th data > waypoints folder, there's a file with same map name but with a .txt extension
-- To create a new waypoint file check the [README.MD](data/README.md) in the data > waypoints folder
+- To create a new waypoint file check the [data/README.MD](https://github.com/ldrizze/soldat-payload-gamemode/tree/master/data) in the data > waypoints folder
 
 # Script tips
 Some tips about the script, how to extend it and how to read the unit files.
