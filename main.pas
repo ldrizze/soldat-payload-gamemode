@@ -578,7 +578,7 @@ begin
     Payload.OnPlayerCollision := @OnPlayerCollidesOnPayload;
     Payload.OnPlayerExternalCollision := @OnPlayerCollidesExternalPayloadCollider;
     Payload.velStep := 0.14;
-    Payload.velMax := 0.5;
+    Payload.velMax := 1.5;
     Payload.xVel := 0.0;
     Payload.isEnd := false;
     Payload.isReached := false;

@@ -19,7 +19,7 @@ interface
             ExternalCollider: CollisionBox;
             OnPlayerCollision, OnPlayerExternalCollision: TOnPlayerCollision;
         end;
-    type 
+    type
         TPayloadWaypoint = record
             wayType: Byte;
             X,Y: single;
@@ -32,7 +32,7 @@ interface
         WAYTYPE_END = 4;
         WAYTYPE_NONE = 0;
 
-    var 
+    var
         PayloadWaypoints: array[1..255] of TPayloadWaypoint;
         _wpointer:Byte;
         Waytype_colors: array[1..4] of Longint;
@@ -59,7 +59,7 @@ implementation
     begin
         for _waycount:=1 to 254 do begin
             if not (PayloadWaypoints[_waycount].wayType = WAYTYPE_NONE) then begin
-                Players.WorldText(200+_waycount, chr(215), 310, Waytype_colors[PayloadWaypoints[_waycount].wayType], 0.1, PayloadWaypoints[_waycount].X, PayloadWaypoints[_waycount].Y);
+                Players.WorldText(200+_waycount, inttostr(_waycount), 310, Waytype_colors[PayloadWaypoints[_waycount].wayType], 0.1, PayloadWaypoints[_waycount].X, PayloadWaypoints[_waycount].Y);
             end;
         end;
     end;
@@ -79,7 +79,7 @@ implementation
     end;
 
     procedure LoadPayloadWaypoints(Mapname: String);
-    var 
+    var
         _filecontent,_filePath:String;
         _splittedlines:TStringList;
         _data:String;
@@ -102,13 +102,13 @@ implementation
                 _sl := Length(_data);
 
                 for _j:=1 to _sl do begin
-                    if _data[_j] = ';' then 
+                    if _data[_j] = ';' then
                     begin
-                        if (_sc1 = 0) then 
-                        begin 
+                        if (_sc1 = 0) then
+                        begin
                             _sc1 := _j;
-                        end 
-                        else if (_sc2 = 0) then 
+                        end
+                        else if (_sc2 = 0) then
                         begin
                             _sc2 := _j;
                             break;
@@ -152,7 +152,7 @@ implementation
         _x := abs(p1.X - p2.X);
         _y := abs(p1.Y - p2.Y);
         _r := sqrt( (_x*_x) + (_y*_y) );
-        Result := _r;        
+        Result := _r;
     end;
 
     var _waycount:Byte;

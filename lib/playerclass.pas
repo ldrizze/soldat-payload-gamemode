@@ -61,7 +61,7 @@ interface
     procedure FlankUltimateEffect(Player: TActivePlayer);
     procedure FlankCancelUltimateEffect(Player: TActivePlayer);
 
-    var 
+    var
         PlayerClassInstances: array[1..32] of TPlayerClass;
         ClassUltimateTime: array[1..TOTAL_CLASSES] of Byte;
         ClassDescription: array[1..TOTAL_CLASSES] of String;
@@ -70,8 +70,8 @@ implementation
     procedure SC3PlaySoundForAll (sound:String; emmiter:TActivePlayer);
     var _pcount:Byte;
     begin
-        for _pcount := 1 to 32 do begin 
-            if not (emmiter = nil) then begin 
+        for _pcount := 1 to 32 do begin
+            if not (emmiter = nil) then begin
                 Players.Player[_pcount].PlaySound(sound, emmiter.X, emmiter.Y);
             end else begin
                 Players.Player[_pcount].PlaySound(sound, Players.Player[_pcount].X, Players.Player[_pcount].Y);
@@ -148,7 +148,7 @@ implementation
     begin
         ResetWeaponsUltimate(Player);
     end;
-    
+
     { GUNSLINGER }
     procedure GunslingerUltimateEffect(Player: TActivePlayer);
     begin
@@ -196,18 +196,18 @@ implementation
             // WriteLn('velX: '+floattostr(velX)+' velY: '+floattostr(velY));
 
             Player.SetVelocity(velX*8, velY*8);
-        end else begin 
+        end else begin
             SC3PlaySoundForAll('../scenery-gfx/payf.png', Player);
             Player.Say('You can run but you can'+chr(39)+'t hide!');
             UltimateInstances[Player.ID].data := 1;
         end;
-        
+
     end;
 
     procedure FlankCancelUltimateEffect(Player: TActivePlayer);
     begin
         UltimateInstances[Player.ID].data := 0;
-    end;   
+    end;
 
     { PLAYER CLASS CREATOR }
     procedure CreatePlayerClass (classType: Byte; Player: TActivePlayer);
@@ -314,7 +314,7 @@ implementation
     var filePath:String;
     begin
         // Initialize vars
-        for i:=1 to 32 do begin 
+        for i:=1 to 32 do begin
             PlayerClassInstances[i]._created := false;
             PlayerClassInstances[i].classType := 0;
             PlayerClassInstances[i].playerID := 0;
@@ -324,7 +324,7 @@ implementation
         ClassUltimateTime[CLASS_TYPE_PYRO] := 10;
         ClassUltimateTime[CLASS_TYPE_HEAVY_ARMOR] := 1;
         ClassUltimateTime[CLASS_TYPE_MEDIC] := 1;
-        ClassUltimateTime[CLASS_TYPE_SNIPER] := 5;
+        ClassUltimateTime[CLASS_TYPE_SNIPER] := 10;
         ClassUltimateTime[CLASS_TYPE_SPY] := 25;
         ClassUltimateTime[CLASS_TYPE_FLANK] := 10;
         ClassUltimateTime[CLASS_TYPE_RADIO] := 1;
