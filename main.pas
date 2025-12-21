@@ -354,6 +354,7 @@ begin
                     WriteLn('[PL][MAIN] Setting new respawn point to ' + inttostr(Trunc(PayloadWaypoints[waypointOffset].X)) + ', ' + inttostr(Trunc(PayloadWaypoints[waypointOffset].Y)));
                     Map.Spawns[SpawnCounter].X := Trunc(PayloadWaypoints[waypointOffset].X);
                     Map.Spawns[SpawnCounter].Y := Trunc(PayloadWaypoints[waypointOffset].Y);
+                    WriteLn('[PL][MAIN] New respawn point set to ' + inttostr(Trunc(Map.Spawns[SpawnCounter].X)) + ', ' + inttostr(Trunc(Map.Spawns[SpawnCounter].Y)));
                 end;
                 waypointOffset := waypointOffset+1;
             end;
